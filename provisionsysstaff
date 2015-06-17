@@ -1,60 +1,121 @@
 #! /usr/bin/env bash
 
+tput setaf 3;echo "Installing SSHpass"; tput sgr0
+sudo apt-get install sshpass
+tput setaf 2;echo "SSHpass Installed"; tput sgr0
 #########################################
 machine_name=$(zenity --entry --title "Ansible Provisioning?" --text="Enter an IP that you would like to provision" --entry-text "IP Address")
-echo "Provisioning the machine of your choice"
+tput setaf 3;echo "Provisioning the machine of your choice"; tput sgr0
 #########################################
 zenity --warning --title "Make sure you add this line!" --text 'echo "machinename ansible_connection=ssh" > /etc/ansible/hosts '
 #### Make sure that the line below is in the /etc/ansible/hosts file ####
 # echo "machinename ansible_connection=ssh" > /etc/ansible/hosts
 
 #########################################
-echo "getting rid of host key crap"
-ssh -t loud@$machine_name 'echo "host keys accepted now"'
+
+ssh-keygen -f "/home/cumorris/.ssh/known_hosts" -R ${machine_name}
+
 #########################################
 
-echo "Installing sysstaff auth"
-ssh -t loud@$machine_name "sudo apt-get install lcsee-sysstaff-auth"
+#if [ "sudo cat /etc/ansible/hosts | grep ${machine_name}" == "${machine_name} ansible_connection=ssh" ] ; then
+#    echo "Ansible Hosts file configured correctly"
+#else
+#    echo "Ansible Hosts file not configured properly"
+#    zenity --warning --title "Make sure you add this line!" --text 'echo "machinename ansible_connection=ssh" > /etc/ansible/hosts '
+#    exit
+#fi
 
-echo "Installing senior auth"
-ssh -t loud@$machine_name "sudo apt-get install lcsee-senior-auth"
+tput setaf 3;echo "Installing Sysstaff Auth"; tput sgr0
+echo " "
+sshpass -p "loud" ssh -t -o stricthostkeychecking=no loud@$machine_name "sudo apt-get install lcsee-sysstaff-auth lcsee-senior-auth -y"
 
-echo "rebooting system"
-ssh -t loud@$machine_name "sudo reboot"
+RESULT=$?
+if [ $RESULT -eq 0 ]; then
+    echo ""
+else
+    tput setaf 3;echo "Machine has already been provisioned before"; tput sgr0
+    ssh -At -o stricthostkeychecking=no cumorris@$machine_name "sudo apt-get install lcsee-sysstaff-auth lcsee-senior-auth -y"
+
+RESULT_2=$?
+if [ $RESULT_2 -eq 0 ]; then
+	echo ""
+else
+    echo " " 
+    tput setaf 1;echo "I can't connect to the machine with user or loud ssh keys"; tput sgr0
+    tput setaf 1;echo "I am going to nmap the machine to tell you if it is up"; tput sgr0
+    nmap ${machine_name} | grep "Host is up" -A1
+    tput setaf 1; echo "Good luck determining the problem br0, my job here is done"; tput sgr0
+    echo " " 
+    exit
+fi
+fi
+tput setaf 2;echo "Sysstaff auth Installed"; tput sgr0
+##########################################
+echo " " 
+tput setaf 3;echo "Rebooting Remote Machine"; tput sgr0
+ssh -At -o stricthostkeychecking=no cumorris@$machine_name "sudo reboot"
+
+RESULT_3=$?
+if [ $RESULT_3 -eq 1 ]; then
+    echo " "
+    tput setaf 1;echo "unable to reboot the machine - Something in the auth package may have broke this"; tput sgr0
+    tput setaf 1;echo "I cannot continue, you're on your own br0" ; tput sgr0
+    echo " "
+    exit
+else
+    tput setaf 2;echo "Machine successfully rebooted"; tput sgr0
+fi
+    
 ###########################################
 
 ######################
-echo "sleeping for 2 minutes"
-echo "2 mins left...."
+tput setaf 2;echo "Machine reboot command executed successfully"; tput sgr0
+tput setaf 3;echo "sleeping for 2 minutes while machine reboots"; tput sgr0
+tput setaf 3;echo "2 mins left...."; tput sgr0
 sleep 1m
-echo "1 mins left..."
+tput setaf 3;echo "1 mins left..."; tput sgr0
 sleep 1m
-echo "done sleeping, back to work"
+tput setaf 3;echo "done sleeping, back to work"; tput sgr0
 #######################
 
 #########################################
 cd /tmp
-#git clone https://webgit.lcseecloud.net/ubuntu/loud-ubuntu-ansible.git
 git archive --remote git@webgit.lcseecloud.net:ubuntu/loud-ubuntu-ansible.git --format tar --prefix=loud-ubuntu-ansible/ master | sudo tar xvf -
 cd /tmp/loud-ubuntu-ansible
-sed -i "s/localhost/${machine_name}/g" loud-test-all.yml
-ansible-playbook -vvvv loud-test-all.yml
-echo "The machine has been provisioned with loud"
+sudo sed -i "s/localhost/${machine_name}/g" loudify.yml
+ansible-playbook -vvvv loudify.yml
+tput setaf 2;echo "The machine has been provisioned with loud"; tput sgr0
+echo " " 
 ##########################################
 
 ##########################################
 cd /tmp
-#git clone https://webgit.lcseecloud.net/ubuntu/lcsee-ubuntu-ansible.git
 git archive --remote git@webgit.lcseecloud.net:ubuntu/lcsee-ubuntu-ansible.git --format tar --prefix=lcsee-ubuntu-ansible/ master | sudo tar xvf -
 cd /tmp/lcsee-ubuntu-ansible
-sed -i "s/localhost/${machine_name}/g" lcsee-sysstaff.yml
+sudo sed -i "s/localhost/${machine_name}/g" lcsee-sysstaff.yml
 ansible-playbook -vvvv lcsee-sysstaff.yml
-echo "The machine has been provisioned with lcsee"
+tput setaf 2;echo "The machine has been provisioned with lcsee"; tput sgr0
+echo " " 
 ##########################################
 
 #########################################
-echo "restarting machine"
-ssh -A cumorris@$machine_name 'sudo reboot'
-echo "machine reboot complete" 
+tput setaf 3;echo "restarting machine"; tput sgr0
+ssh -A -o stricthostkeychecking=no cumorris@$machine_name 'sudo reboot'
+
+RESULT_4=$?
+if [ $RESULT_4 -eq 1 ]; then
+    tput setaf 1;echo "unable to reboot the machine - Something in the lcsee or loud playbooks may have broke this"; tput sgr0
+    tput setaf 1;echo "I cannot continue, you're on your own br0"; tput sgr0
+    echo " "
+    exit
+    
+else
+    tput setaf 2;echo "Machine reboot complete";tput sgr0
+    
+fi
+
+tput setaf 2;echo "Provisioning complete"; tput sgr0
+exit
+
 #########################################
 
