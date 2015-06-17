@@ -1,0 +1,59 @@
+#! /usr/bin/env bash
+#########################################
+#zenity --entry --title "Ansible Provisioning?" --text="Enter an IP that you would like to provision" --entry-text "IP Address"
+echo "Provisioning the machine of your choice"
+#########################################
+
+#### Make sure that the line below is in the /etc/ansible/hosts file ####
+# echo "machinename ansible_connection=ssh" > /etc/ansible/hosts
+
+#########################################
+echo "getting rid of host key crap"
+ssh -t loud@$1 'echo "host keys accepted now"'
+#########################################
+
+echo "Installing sysstaff auth"
+ssh -t loud@$1 "sudo apt-get install lcsee-sysstaff-auth"
+
+echo "Installing senior auth"
+ssh -t loud@$1 "sudo apt-get install lcsee-senior-auth"
+
+echo "rebooting system"
+ssh -t loud@$1 "sudo reboot"
+###########################################
+
+######################
+echo "sleeping for 3 minutes"
+echo "3 mins left...."
+sleep 1m
+echo "2 mins left..."
+sleep 1m
+echo "1 minute left"
+sleep 1m
+echo "done sleeping, back to work"
+#######################
+
+#########################################
+cd /tmp
+git clone https://webgit.lcseecloud.net/ubuntu/loud-ubuntu-ansible.git
+cd /tmp/loud-ubuntu-ansible
+sed -i "s/localhost/${1}/g" loud-test-all.yml
+ansible-playbook -vvvv loud-test-all.yml
+echo "The machine has been provisioned with loud"
+##########################################
+
+##########################################
+cd /tmp
+git clone https://webgit.lcseecloud.net/ubuntu/lcsee-ubuntu-ansible.git
+cd /tmp/lcsee-ubuntu-ansible
+sed -i "s/localhost/${1}/g" lcsee-sysstaff.yml
+ansible-playbook -vvvv lcsee-sysstaff.yml
+echo "The machine has been provisioned with lcsee"
+##########################################
+
+#########################################
+#echo "restarting machine"
+#ssh -A cumorris@$1 'sudo reboot'
+#echo "machine reboot complete" 
+#########################################
+

@@ -1,0 +1,5 @@
+#! /bin/bash
+
+# Run Eclipse from the Docker container 
+docker run --net=host -v /media:/media -v /home/loud:/home/loud -e DISPLAY=$DISPLAY loud/eclipse eclipse & 
+

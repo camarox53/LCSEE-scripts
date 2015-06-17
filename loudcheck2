@@ -1,0 +1,172 @@
+#! /usr/bin/env bash
+
+# Must load keys                                                                                                                                                                                          
+if [ "$(ssh-add -L | grep "The agent has no identities.")" == "The agent has no identities." ]; then
+    echo "Your SSH keys appear to not be loaded. Please load them before running this script."
+else
+
+##################### Welcome Line #######################
+echo '######################' > /home/${USER}/loud-checks
+echo 'Starting Inf-co checks' >> /home/${USER}/loud-checks
+echo '######################' >> /home/${USER}/loud-checks
+echo ' ' >> /home/${USER}/loud-checks
+#########################################################
+
+##################### Ldap init #########################
+echo '######################' >> /home/${USER}/loud-checks
+echo 'Running ldap init ' >> /home/${USER}/loud-checks
+lcsee-ldap-infco --init >> /home/${USER}/loud-checks
+echo '#####################' >> /home/${USER}/loud-checks
+echo ' ' >> /home/${USER}/loud-checks
+#########################################################
+
+###################### Ldap Check #######################
+echo '####################' >> /home/${USER}/loud-checks 
+echo 'Running ldap check ' >> /home/${USER}/loud-checks
+lcsee-ldap-infco --check >> /home/${USER}/loud-checks
+echo '###################' >> /home/${USER}/loud-checks
+echo ' ' >> /home/${USER}/loud-checks
+#########################################################
+
+##################### Ldap Clean #######################
+echo '####################' >> /home/${USER}/loud-checks
+echo 'Running ldap clean ' >> /home/${USER}/loud-checks
+lcsee-ldap-infco --clean >> /home/${USER}/loud-checks
+echo '################### ' >> /home/${USER}/loud-checks
+echo ' ' >> /home/${USER}/loud-checks
+########################################################
+
+################## Automount checks ####################
+echo '####################' >> /home/${USER}/loud-checks
+echo "Starting automount Checks...Please wait."
+automountChecks >> /home/${USER}/loud-checks
+echo '####################' >> /home/${USER}/loud-checks
+echo ' ' >> /home/${USER}/loud-checks
+########################################################
+
+############# Checking Loadbalancer ####################
+echo '####################' >> /home/${USER}/loud-checks
+echo 'SSHing to Proprietary shell' >> /home/${USER}/loud-checks
+ssh -Aqp 20110 -o stricthostkeychecking=no ${USER}@proprietary.lcsee.wvu.edu 'echo "Proprietary Load balancer in tact"'
+echo 'SSHing to DMZ Shell' >> /home/${USER}/loud-checks
+ssh -Aqp 20110 -o stricthostkeychecking=no ${USER}@shell.lcsee.wvu.edu 'echo "Shell Load balancer in tact"'
+echo '####################' >> /home/${USER}/loud-checks
+#######################################################
+
+########## Testing proprietary software ###############
+echo '####################' >> /home/${USER}/loud-checks
+echo 'Running matlab on Proprietary' >> /home/${USER}/loud-checks
+ssh -AXp 20110 -o stricthostkeychecking=no ${USER}@proprietary.lcsee.wvu.edu "/usr/local/MATLAB/R2012a/bin/matlab"
+echo 'Matlab Testing complete' >> /home/${USER}/loud-checks
+echo 'Running cadense-610 on Proprietary' >> /home/${USER}/loud-checks
+ssh -AXp 20110 -o stricthostkeychecking=no ${USER}@proprietary.lcsee.wvu.edu "/usr/bin/cadence-610"
+echo 'Cadence-610 Testing complete' >> /home/${USER}/loud-checks
+echo '####################' >> /home/${USER}/loud-checks
+echo ' ' >> /home/${USER}/loud-checks
+
+######################################################
+
+
+################## Starting Report #############################
+echo " Starting ldap report" 
+echo '######################## ' > /home/${USER}/loud-report
+echo 'Report for loud checks is as follows:' >> /home/${USER}/loud-report
+echo ' ' >> /home/${USER}/loud-report
+#######################################################
+
+#################### Report LDAP ######################
+echo '######################## ' >> /home/${USER}/loud-report
+echo 'Success reported from LDAP are:' >> /home/${USER}/loud-report
+cat /home/${USER}/loud-checks | grep "Success" >> /home/${USER}/loud-report
+echo '######################## ' >> /home/${USER}/loud-report
+echo ' ' >> /home/${USER}/loud-report
+
+echo '######################## ' >> /home/${USER}/loud-report
+echo 'Failures reported from LDAP are: ' >> /home/${USER}/loud-report
+cat /home/${USER}/loud-checks | grep "Fail" >> /home/${USER}/loud-report
+echo '######################## ' >> /home/${USER}/loud-report
+echo ' ' >> /home/${USER}/loud-report
+##################################################################
+
+
+########################## Adding Automount Info to Report #################################################
+echo 'Automount Check Report: ' >> /home/${USER}/loud-report
+echo ' ' >> /home/${USER}/loud-report
+echo "Starting Automount Report"
+
+echo 'Automounting on dmzlegacyshell001' >> /home/${USER}/loud-report
+echo 'Passed: ' >> /home/${USER}/loud-report
+cat "/home/${USER}/loud-checks" | grep -A 1 "passed" | cut -d: -f2 | sed '2,2!d' >> /home/${USER}/loud-report
+echo 'Failed: ' >> /home/${USER}/loud-report
+cat "/home/${USER}/loud-checks" | grep -A 1 "failed" | cut -d: -f2 | sed '2,2!d' | grep -v "===" >> /home/${USER}/loud-report
+echo ' ' >> /home/${USER}/loud-report
+
+echo 'Automounting on dmzlegacyshell002' >> /home/${USER}/loud-report
+echo 'Passed: ' >> /home/${USER}/loud-report
+cat "/home/${USER}/loud-checks" | grep -A 1 "passed" | cut -d: -f2 | sed '5,5!d' >> /home/${USER}/loud-report
+echo 'Failed: ' >> /home/${USER}/loud-report
+cat "/home/${USER}/loud-checks" | grep -A 1 "failed" | cut -d: -f2 | sed '5,5!d' | grep -v "===" >> /home/${USER}/loud-report
+echo ' ' >> /home/${USER}/loud-report
+
+echo 'Automounting on dmzshell001' >> /home/${USER}/loud-report
+echo 'Passed: ' >> /home/${USER}/loud-report
+cat "/home/${USER}/loud-checks" | grep -A 1 "passed" | cut -d: -f2 | sed '8,8!d' >> /home/${USER}/loud-report
+echo 'Failed: ' >> /home/${USER}/loud-report
+cat "/home/${USER}/loud-checks" | grep -A 1 "failed" | cut -d: -f2 | sed '8,8!d' | grep -v "===" >> /home/${USER}/loud-report
+echo ' ' >> /home/${USER}/loud-report
+
+echo 'Automounting on dmzshell002' >> /home/${USER}/loud-report
+echo 'Passed: ' >> /home/${USER}/loud-report
+cat "/home/${USER}/loud-checks" | grep -A 1 "passed" | cut -d: -f2 | sed '11,11!d' >> /home/${USER}/loud-report
+echo 'Failed: ' >> /home/${USER}/loud-report
+cat "/home/${USER}/loud-checks" | grep -A 1 "failed" | cut -d: -f2 | sed '11,11!d' | grep -v "===" >> /home/${USER}/loud-report
+echo ' ' >> /home/${USER}/loud-report
+
+echo 'Automounting on dmzshell003' >> /home/${USER}/loud-report
+echo 'Passed: ' >> /home/${USER}/loud-report
+cat "/home/${USER}/loud-checks" | grep -A 1 "passed" | cut -d: -f2 | sed '14,14!d' >> /home/${USER}/loud-report
+echo 'Failed: ' >> /home/${USER}/loud-report
+cat "/home/${USER}/loud-checks" | grep -A 1 "failed" | cut -d: -f2 | sed '14,14!d' | grep -v "===" >> /home/${USER}/loud-report
+echo ' ' >> /home/${USER}/loud-report
+
+echo 'Automounting on dmzshell004' >> /home/${USER}/loud-report
+echo 'Passed: ' >> /home/${USER}/loud-report
+cat "/home/${USER}/loud-checks" | grep -A 1 "passed" | cut -d: -f2 | sed '17,17!d' >> /home/${USER}/loud-report
+echo 'Failed: ' >> /home/${USER}/loud-report
+cat "/home/${USER}/loud-checks" | grep -A 1 "failed" | cut -d: -f2 | sed '17,17!d' | grep -v "===" >> /home/${USER}/loud-report
+echo ' ' >> /home/${USER}/loud-report
+
+echo 'Automounting on dmzproprietary001' >> /home/${USER}/loud-report
+echo 'Passed: ' >> /home/${USER}/loud-report
+cat "/home/${USER}/loud-checks" | grep -A 1 "passed" | cut -d: -f2 | sed '20,20!d' >> /home/${USER}/loud-report
+echo 'Failed: ' >> /home/${USER}/loud-report
+cat "/home/${USER}/loud-checks" | grep -A 1 "failed" | cut -d: -f2 | sed '20,20!d' | grep -v "===" >> /home/${USER}/loud-report
+echo ' ' >> /home/${USER}/loud-report
+
+echo 'Automounting on dmzproprietary002' >> /home/${USER}/loud-report
+echo 'Passed: ' >> /home/${USER}/loud-report
+cat "/home/${USER}/loud-checks" | grep -A 1 "passed" | cut -d: -f2 | sed '23,23!d' >> /home/${USER}/loud-report
+echo 'Failed: ' >> /home/${USER}/loud-report
+cat "/home/${USER}/loud-checks" | grep -A 1 "failed" | cut -d: -f2 | sed '23,23!d' | grep -v "===" >> /home/${USER}/loud-report
+echo ' ' >> /home/${USER}/loud-report
+
+echo 'Automounting on dmzproprietary003' >> /home/${USER}/loud-report
+echo 'Passed: ' >> /home/${USER}/loud-report
+cat "/home/${USER}/loud-checks" | grep -A 1 "passed" | cut -d: -f2 | sed '26,26!d' >> /home/${USER}/loud-report
+echo 'Failed: ' >> /home/${USER}/loud-report
+cat "/home/${USER}/loud-checks" | grep -A 1 "failed" | cut -d: -f2 | sed '26,26!d' | grep -v "===" >> /home/${USER}/loud-report
+echo ' ' >> /home/${USER}/loud-report
+
+echo 'Automounting on dmzproprietary004' >> /home/${USER}/loud-report
+echo 'Passed: ' >> /home/${USER}/loud-report
+cat "/home/${USER}/loud-checks" | grep -A 1 "passed" | cut -d: -f2 | sed '29,29!d' >> /home/${USER}/loud-report
+echo 'Failed: ' >> /home/${USER}/loud-report
+cat "/home/${USER}/loud-checks" | grep -A 1 "failed" | cut -d: -f2 | sed '29,29!d' | grep -v "===" >> /home/${USER}/loud-report
+echo ' ' >> /home/${USER}/loud-report
+
+
+echo "Automount Report Finished"
+
+
+# Final fi to end the if statement
+fi

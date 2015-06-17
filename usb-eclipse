@@ -1,0 +1,35 @@
+#!/bin/bash
+
+#echo -e "Preparing roaming eclipse environment..."
+
+#check for existence of cloudhome directory
+#if [ ! -d /media/${USER} ]; then
+#    echo -e "No cloudhome directory.  Exiting."
+#    zenity --error --title='No usb found!' --text 'Please plug in your usb flash drive' --width 10
+#    exit 0
+#fi
+
+
+usb_location=$(zenity --title "Select your flashdrive location" --file-selection --directory)
+echo ${usb_location}
+
+#check if link is already setup
+if [ -h /home/${USER}/.eclipse ]; then
+#    echo -e "Link in cLOUD already exists.  Run eclipse to continue."
+    exit 1
+fi
+#check for a local .eclipse directory
+if [ -d /home/${USER}/.eclipse ]; then
+#    echo -e "Local .eclipse exists.  Backing up to .eclipse.local"
+    mv /home/${USER}/.eclipse /home/${USER}/.eclipse.local
+fi
+#check for existence of .eclipse in cloud
+if [ -d ${usb_location}/.eclipse ]; then
+#    echo -e "Creating .eclipse link in the cLOUD"
+    ln -s ${usb_location}/.eclipse /home/${USER}/.eclipse
+else
+    mkdir ${usb_location}/.eclipse
+    ln -s ${usb_location}/.eclipse /home/${USER}/.eclipse
+fi
+#echo -e "Link created.  Run eclipse to continue."
+exit 1
