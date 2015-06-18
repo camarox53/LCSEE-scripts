@@ -1,0 +1,2 @@
+echo 'Acquire::socks::proxy "socks://localhost:3128/";' | sudo tee -a /etc/apt/apt.conf
+ssh -ACND localhost:3128 cumorris@dmzshell001.lcsee.wvu.edu -p 20110
