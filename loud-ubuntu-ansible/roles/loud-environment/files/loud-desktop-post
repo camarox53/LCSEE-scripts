@@ -1,0 +1,15 @@
+#! /bin/bash
+
+# Locally set workspaces
+gconftool-2 --type int --set /apps/compiz-1/general/screen0/options/vsize 2
+gconftool-2 --type int --set /apps/compiz-1/general/screen0/options/hsize 2
+
+# Locally set unity launcher
+gsettings set com.canonical.Unity.Launcher favorites "['ubiquity-gtkui.desktop', 'nautilus-home.desktop', 'firefox.desktop', 'gnome-terminal.desktop', 'gnome-control-center.desktop', 'loud-student-resource-app.desktop']"
+
+#Command used to recompile the schema change for the Unity launcher change, and to set workspaces
+glib-compile-schemas /usr/share/glib-2.0/schemas/
+
+
+#Fix a couple known bugs. See rt:209016
+#pam-auth-update --force

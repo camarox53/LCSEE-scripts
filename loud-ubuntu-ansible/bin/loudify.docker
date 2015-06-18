@@ -1,0 +1,86 @@
+#!/bin/bash
+#
+# usage: sudo bash loudify
+#
+# Description: 
+# This script will take a stock Ubuntu 15.04 system and provision it with
+# LOUD using ansible.
+#
+# This was an older version of the script that sets up docker outside
+# of ansible.  Keeping here for posterity in case we ever want to add
+# container support back in.
+
+
+loudifier()
+  {
+    # Display Message, Get User Input
+    echo "Everything checks out ok..."
+    echo "You may want to grab some popcorn, this process can take awhile."
+    echo "Hit enter to continue, q to quit."
+    read -s -n 1 key
+
+    if [[ $key = "" ]]; then 
+      echo 'LOUDIFYING FOR THE WIN!'
+    else
+      echo "Aborting."
+      exit 1
+    fi
+
+    # install ansible
+    apt-get -y install ansible
+    echo "localhost ansible_connection=local" > /etc/ansible/hosts
+
+    # install docker
+    apt-get -y install docker.io
+
+    # install python-setuptools (needed for easy_install)
+    apt-get -y install python-setuptools
+
+    # install python pip which is needed for ansible and docker
+    #apt-get -y install python-pip -> The packaged version is too old
+    easy_install -U pip
+
+    # install docker-py with pip
+    pip install docker-py==1.0.0
+
+    # Add loud user to docker group
+    gpasswd -a loud docker
+
+    #Start the docker daemon
+    service docker start
+
+    # install wget
+    apt-get -y install wget
+
+    # wget tarball
+#    wget -P /opt http://loud.lcsee.wvu.edu/phonehome/loud-ubuntu-ansible.tar.gz 
+
+    # uncompress
+#    tar xvf /opt/loud-ubuntu-ansible.tar.gz -C /opt
+
+    # run ansible
+    ansible-playbook -vvvv /opt/loud-ubuntu-ansible/loudify.yml
+
+    # Ask user to reboot
+    #echo "##############################################################"
+    #echo "Scripted completed.  Run sudo reboot to complete installation."
+    #echo "##############################################################"
+  }
+
+
+# am I root?
+if [ "$(id -u)" != "0" ]; then
+   echo "This script must be run as root.  Use sudo loudify" 1>&2
+   exit 1
+fi
+
+# check version
+VERSION=`lsb_release -r | awk '{ print $2; }'`
+
+case "$VERSION" in
+  "15.04") loudifier "lvivid"
+    ;;
+  *) echo "Aborting.  Distribution not supported. Please use Ubuntu Ubuntu 15.04 as a base." 1>&2
+     exit 1 
+   ;;
+   esac

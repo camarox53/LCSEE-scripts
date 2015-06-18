@@ -1,0 +1,12 @@
+- name: build eclipse
+  remote_user: loud
+  docker_image: path="/opt/loud-ubuntu-ansible/Dockerfiles/eclipse" name="loud/eclipse" state=present
+
+- name: Copy configuration files into place.
+  copy: src={{ item.s }} dest={{ item.d }} owner={{ item.o }} group={{ item.g }}
+  with_items:
+    - { s: 'usr/bin/loud-eclipse', d: '/usr/bin/loud-eclipse', o: 'root', g: 'root' }
+
+- name: make loud-eclipse executable
+  command: chmod 755 /usr/bin/loud-eclipse
+

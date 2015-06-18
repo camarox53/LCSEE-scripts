@@ -1,0 +1,23 @@
+- name: Copy custom background
+  copy: src={{ item.s }} dest={{ item.d }} owner={{ item.o }} group={{ item.g }} mode={{ item.m }}
+  with_items:
+  - { s: 'usr/share/backgrounds/warty-final-ubuntu.png', d: '/usr/share/backgrounds/warty-final-ubuntu.png', o: 'root', g: 'root', m: '0644' }
+
+- name: Force override of unity bar
+  copy: src=10_local-unity-launcher.gschema.override  dest=/usr/share/glib-2.0/schemas/10_local-unity-launcher.gschema.override 
+
+- name: Locally set unity launcher
+  command: gsettings set com.canonical.Unity.Launcher favorites "['ubiquity-gtkui.desktop', 'nautilus-home.desktop', 'firefox.desktop', 'gnome-terminal.desktop', 'gnome-control-center.desktop', 'loud-student-resource-app.desktop']"
+
+- name: recompile schema
+  command: glib-compile-schemas /usr/share/glib-2.0/schemas/
+
+- name: Create skel directory
+  command: mkdir -p /etc/skel/Desktop
+   
+- name: Create lightdm directory
+  command: mkdir -p /etc/lightdm/lightdm.conf.d
+   
+- name: Run post install script
+  script: loud-desktop-post
+

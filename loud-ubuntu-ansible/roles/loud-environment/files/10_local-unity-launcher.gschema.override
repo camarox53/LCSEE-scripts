@@ -1,0 +1,2 @@
+[com.canonical.Unity.Launcher]
+favorites=['ubiquity-gtkui.desktop', 'nautilus-home.desktop', 'firefox.desktop', 'gnome-terminal.desktop', 'gnome-control-center.desktop']

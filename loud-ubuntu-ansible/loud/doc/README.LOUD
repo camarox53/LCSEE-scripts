@@ -1,0 +1,6 @@
+loud-ubuntu-ansible for LOUD
+------------------------------
+
+Debian package containing scripts to provision with ansible.
+
+ -- David Krovich <david.krovich@mail.wvu.edu>, Tue, 16 Jun 2015 20:43:31 -0700

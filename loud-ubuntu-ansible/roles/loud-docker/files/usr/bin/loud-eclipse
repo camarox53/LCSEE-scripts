@@ -1,0 +1,2 @@
+docker run -e DISPLAY -v /home/loud:/home/loud --net=host loud/eclipse
+#

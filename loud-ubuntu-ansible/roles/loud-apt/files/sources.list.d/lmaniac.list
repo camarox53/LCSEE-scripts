@@ -1,0 +1,8 @@
+## LMANIAC
+deb http://loud.lcsee.wvu.edu/lmaniac/ ltrusty-lmaniac/
+deb-src http://loud.lcsee.wvu.edu/lmaniac/ ltrusty-lmaniac/
+
+## LMANIAC Test
+deb http://loud.lcsee.wvu.edu/lmaniac/ ltrusty-lmaniac-test/
+deb-src http://loud.lcsee.wvu.edu/lmaniac/ ltrusty-lmaniac-test/
+

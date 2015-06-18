@@ -1,5 +1,13 @@
 #! /usr/bin/env bash
 
+# CONSTANTS
+CDTEMP='cd /tmp'
+CDHOME="cd ${HOME}"
+CDLOUD='cd /tmp/loud-ubuntu-ansible'
+CDLCSEE='cd /tmp/lcsee-ubuntu-ansible'
+LOUDIFY='ansible-playbook loudify.yml'
+LCSEE_SYSSTAFF='ansible-playbook lcsee-sysstaff.yml'
+
 # Print some info if the user uses "-h" in their command
 usage()
 {
@@ -27,7 +35,7 @@ EOF
 # Checking to see if the user has their ssh keys loaded
 keys(){
     if [ "$(ssh-add -L | grep "The agent has no identities.")" == "The agent has no identities." ]; then
-	tput setaf 1;echo "Please load your SSH keys before running this script"; tput sgr0
+	 zenity --warning --title "Add your keys br0!" --text 'echo "Please Load your SSH Keys before running this script"'
     else
 	tput setaf 2;echo "Your SSH Keys have been successfully loaded"; tput sgr0
     fi
@@ -37,8 +45,18 @@ keys(){
 
 # Getting the name of the machine that the user would like to provision
 get_machine_name(){
-
     machine_name=$(zenity --entry --title "Ansible Provisioning?" --text="Enter an IP that you would like to provision" --entry-text "IP Address")
+    RESULT_5=$?
+    if [ $RESULT_5 -eq 1 ]; then
+        exit
+
+    fi
+
+    if [ "$machine_name" == "IP Address" ]; then
+	''zenity --warning --title "No IP Entered " --text="BAILING OUT BR0 - NO IP ENTERED"''
+	exit
+    fi
+    
 }
 
 #########################################
@@ -59,16 +77,16 @@ remove_known_hosts(){
 
 # Getting the loud-ubuntu-ansible playbooks from webgit and running them on the machine that is being provisioned
 get_loud_playbook(){
-    cd /tmp
+    $CDTEMP
     git archive --remote git@webgit.lcseecloud.net:ubuntu/loud-ubuntu-ansible.git --format tar --prefix=loud-ubuntu-ansible/ master | sudo tar xvf -
-    cd ~/
+    $CDHOME
 }
 
 run_loud_playbook(){
-    cd /tmp/loud-ubuntu-ansible
+    $CDLOUD
     sudo sed -i "s/localhost/${machine_name}/g" loudify.yml
-    ansible-playbook loudify.yml 
-    cd ~/
+    $LOUDIFY
+    $CDHOME
     echo " "
 } 
 
@@ -76,16 +94,16 @@ run_loud_playbook(){
 
 # Getting the playbook for lcsee-ubuntu-ansible and running that on the machine that is being provisioned
 get_lcsee_playbook(){
-    cd /tmp
+    $CDTEMP
     git archive --remote git@webgit.lcseecloud.net:ubuntu/lcsee-ubuntu-ansible.git --format tar --prefix=lcsee-ubuntu-ansible/ master | sudo tar xvf -
-    cd ~/
+    $CDHOME
 }
 
 run_lcsee_playbook(){
-    cd /tmp/lcsee-ubuntu-ansible
+    $CDLCSEE
     sudo sed -i "s/localhost/${machine_name}/g" lcsee-sysstaff.yml
-    ansible-playbook lcsee-sysstaff.yml
-    cd ~/
+    $LCSEE_SYSSTAFF
+    $CDHOME
     echo " "
 }
 

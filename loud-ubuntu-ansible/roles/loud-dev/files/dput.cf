@@ -1,0 +1,39 @@
+[DEFAULT]
+default_host_main = LOUD
+
+[LOUD]
+fqdn = loud.lcsee.wvu.edu
+incoming = /srv/bronze/loud/mini-dinstall/incoming
+method = scp
+login = loud
+
+[LMANIAC]
+fqdn = loud.lcsee.wvu.edu
+incoming = /srv/bronze/lmaniac/mini-dinstall/incoming
+method = scp
+login = lmaniac
+
+[STABLE]
+fqdn = loud.lcsee.wvu.edu
+incoming = /srv/bronze/stable/mini-dinstall/incoming
+method = scp
+login = stable
+
+[NONFREE]
+fqdn = nonfree001.lcsee.wvu.edu
+incoming = /srv/bronze/stable/mini-dinstall/incoming
+method = scp
+login = stable
+
+[NONFREETEST]
+fqdn = nonfree001.lcsee.wvu.edu
+incoming = /srv/bronze/loud/mini-dinstall/incoming
+method = scp
+login = loud
+
+[revu]
+fqdn = revu.ubuntuwire.com
+incoming = /incoming
+login = anonymous
+progress_indicator = 2
+allow_unsigned_uploads = 0

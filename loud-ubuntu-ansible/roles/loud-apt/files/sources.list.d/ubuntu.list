@@ -1,0 +1,15 @@
+# Ubuntu upstream
+deb http://mirror.lcsee.wvu.edu/ubuntu/ vivid main restricted universe multiverse
+deb-src http://mirror.lcsee.wvu.edu/ubuntu/ vivid main restricted universe multiverse
+
+# Ubuntu security updates
+deb http://mirror.lcsee.wvu.edu/ubuntu/ vivid-security main restricted universe multiverse
+deb-src http://mirror.lcsee.wvu.edu/ubuntu/ vivid-security main restricted universe multiverse
+
+# Ubuntu updates
+deb http://mirror.lcsee.wvu.edu/ubuntu/ vivid-updates main restricted universe multiverse
+deb-src http://mirror.lcsee.wvu.edu/ubuntu/ vivid-updates main restricted universe multiverse
+
+#Ubuntu backports
+deb http://mirror.lcsee.wvu.edu/ubuntu/ vivid-backports main restricted universe multiverse
+deb-src http://mirror.lcsee.wvu.edu/ubuntu/ vivid-backports main restricted universe multiverse

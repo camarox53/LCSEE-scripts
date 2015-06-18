@@ -1,0 +1,4 @@
+loudify.yml opt/loud/ansible/loud-ubuntu-ansible
+bin/* opt/loud/ansible/loud-ubuntu-ansible/bin
+roles/* opt/loud/ansible/loud-ubuntu-ansible/roles
+
