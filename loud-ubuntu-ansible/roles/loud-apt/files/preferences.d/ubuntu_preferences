@@ -1,4 +1,0 @@
-Package: *
-Pin: release a=vivid-backports
-Pin-Priority: 100
-

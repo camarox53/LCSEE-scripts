@@ -1,5 +1,0 @@
----
-#loud-apt
-
-  - name: Configure Apt
-    include: task/setup.yml

@@ -1,7 +1,0 @@
-Package: *
-Pin: release a=ltrusty-lmaniac
-Pin-Priority: 700
-
-Package: *
-Pin: release a=ltrusty-lmaniac-test
-Pin-Priority: 100

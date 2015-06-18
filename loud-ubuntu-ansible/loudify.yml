@@ -1,7 +1,0 @@
-- hosts: localhost
-  sudo: yes
-  
-  roles:
-    - loud-apt
-    - loud-software
-    - loud-environment

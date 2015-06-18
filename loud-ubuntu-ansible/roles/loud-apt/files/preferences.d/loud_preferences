@@ -1,7 +1,0 @@
-Package: *
-Pin: release a=ltrusty
-Pin-Priority: 700
-
-Package: *
-Pin: release a=ltrusty-test
-Pin-Priority: 500

@@ -1,6 +1,0 @@
- - name: install dput
-   apt: name=dput state=latest
-
- - name: Copy dput config
-   copy: src=dput.cf dest=/etc/
-   

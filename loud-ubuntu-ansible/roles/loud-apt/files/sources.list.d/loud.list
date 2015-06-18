@@ -1,8 +1,0 @@
-# LOUD
-deb http://loud.lcsee.wvu.edu/stable/ lvivid/
-deb-src http://loud.lcsee.wvu.edu/stable/ lvivid/
-
-# LOUD testing
-deb http://loud.lcsee.wvu.edu/loud/ lvivid-test/
-deb-src http://loud.lcsee.wvu.edu/loud/ lvivid-test/
-
