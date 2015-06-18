@@ -1,5 +1,9 @@
 #! /usr/bin/env bash
 
+if [ "$(ssh-add -L | grep "The agent has no identities.")" == "The agent has no identities." ]; then
+    echo "Your SSH keys appear to not be loaded. Please load them before running this script."
+else
+
 #tput setaf 3;echo "Installing SSHpass"; tput sgr0
 #sudo apt-get install sshpass
 #tput setaf 2;echo "SSHpass Installed"; tput sgr0
@@ -119,3 +123,4 @@ exit
 
 #########################################
 
+fi
