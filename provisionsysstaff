@@ -10,7 +10,7 @@ Usage:
 
     -h     Show the Help menu for provisionsysstaff
 
-    Description:
+Description:
     This tool is designed to fully provision a machine for use at
     the lcsee systems office. It is written to remote connect to
     the machine and provision it with Ansible using our playbooks.
@@ -23,6 +23,7 @@ EOF
 [ "${1}" == "-h" ] && usage && exit 0
 
 ########################################
+
 # Checking to see if the user has their ssh keys loaded
 keys(){
     if [ "$(ssh-add -L | grep "The agent has no identities.")" == "The agent has no identities." ]; then
@@ -31,33 +32,31 @@ keys(){
 	tput setaf 2;echo "Your SSH Keys have been successfully loaded"; tput sgr0
     fi
 }
-#########################################
 
 #########################################
+
 # Getting the name of the machine that the user would like to provision
 get_machine_name(){
 
     machine_name=$(zenity --entry --title "Ansible Provisioning?" --text="Enter an IP that you would like to provision" --entry-text "IP Address")
 }
-#tput setaf 3;echo "Provisioning the machine of your choice"; tput sgr0
 
 #########################################
 
-#########################################
 # Warning the user that they need to have the name of the machine that they wish to provision in their /etc/ansible/hosts file
 throw_warning(){
     zenity --warning --title "Make sure you add this line!" --text 'echo "machinename ansible_connection=ssh" > /etc/ansible/hosts '
 }
+
 #########################################
 
-########################################
 # Removing the host keys warning
 remove_known_hosts(){
     ssh-keygen -f "/home/cumorris/.ssh/known_hosts" -R ${machine_name} >> /dev/null
 }
-#########################################
 
 #########################################
+
 # Getting the loud-ubuntu-ansible playbooks from webgit and running them on the machine that is being provisioned
 get_loud_playbook(){
     cd /tmp
@@ -66,17 +65,15 @@ get_loud_playbook(){
 }
 
 run_loud_playbook(){
-    #echo "Starting the LOUD provisioning of machine"
     cd /tmp/loud-ubuntu-ansible
     sudo sed -i "s/localhost/${machine_name}/g" loudify.yml
     ansible-playbook loudify.yml 
-    #tput setaf 2;echo "The machine has been provisioned with loud"; tput sgr0
     cd ~/
     echo " "
 } 
-##########################################
 
 ##########################################
+
 # Getting the playbook for lcsee-ubuntu-ansible and running that on the machine that is being provisioned
 get_lcsee_playbook(){
     cd /tmp
@@ -89,12 +86,11 @@ run_lcsee_playbook(){
     sudo sed -i "s/localhost/${machine_name}/g" lcsee-sysstaff.yml
     ansible-playbook lcsee-sysstaff.yml
     cd ~/
-    #tput setaf 2;echo "The machine has been provisioned with lcsee"; tput sgr0
     echo " "
 }
-##########################################
 
 #########################################
+
 # Rebooting the machine so the playbooks can take effect
 reboot_machine(){
     tput setaf 3;echo "restarting machine"; tput sgr0
@@ -115,8 +111,8 @@ fi
     tput setaf 6;echo "Provisioning complete"; tput sgr0
 exit
 }
-#########################################
 
+#########################################
 
 echo " "
 tput setaf 4;echo "########################################"; tput sgr0
@@ -181,6 +177,3 @@ tput setaf 4;echo "########################################"; tput sgr0
 reboot_machine 
 tput setaf 4;echo "########################################"; tput sgr0
 
-
-# Ending "fi" from the ssh-keys if statement
-#fi
