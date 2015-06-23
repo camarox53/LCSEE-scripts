@@ -203,11 +203,9 @@ echo " "
 #######################################################################
 echo " "
 tput setaf 4;echo "########################################"; tput sgr0
-tput setaf 3;echo "Getting lcsee-scripts for cumorris"; tput sgr0
-if [ "${USER}" == "cumorris" ]; then
-    remove_lcsee-scripts
-    get_lcsee-scripts
-fi
+tput setaf 3;echo "Getting lcsee-scripts"; tput sgr0
+remove_lcsee-scripts
+get_lcsee-scripts
 tput setaf 2;echo "lcsee-scripts downloaded"; tput sgr0
 tput setaf 4;echo "########################################"; tput sgr0
 echo " "
