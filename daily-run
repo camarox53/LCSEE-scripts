@@ -256,6 +256,14 @@ echo " "
 ########################################################################
 echo " "
 tput setaf 4;echo "########################################"; tput sgr0
+tput setaf 3;echo "Starting Control Center"; tput sgr0
+. ~/lcsee-scripts/setup-hub
+tput setaf 2;echo "Control Center Started"; tput sgr0
+tput setaf 4;echo "########################################"; tput sgr0
+echo " "
+########################################################################
+echo " "
+tput setaf 4;echo "########################################"; tput sgr0
 tput setaf 3;echo "Calling your open-windows script"; tput sgr0
 open_windows
 tput setaf 2;echo "Calling your open-windows script"; tput sgr0
