@@ -1,0 +1,9 @@
+#! /usr/bin/env bash
+
+HOST_STATUS='$(ssh -A cumorris@nagios001 sudo nagios3stats | grep "Hosts Up/Down/Unreach:")'
+HOSTS_DOWN='$(ssh -A cumorris@nagios001 sudo nagios3stats | grep "Hosts Up/Down/Unreach:" | cut -d/ -f4)'
+#HOST_DOWN='$(ssh nagios001 sudo nagios3stats | grep "Hosts In Downtime:")'
+if [ "$HOSTS_DOWN" != 0 ]; then
+    notify-send "Nagios001 Server Hosts down:" `ssh -A cumorris@nagios001 sudo nagios3stats | grep "Hosts Up/Down/Unreach:" | cut -d/ -f4`
+fi
+			    

@@ -79,7 +79,7 @@ add_ssh_keys(){
 }
 
 SSH_AUTH=$(env |grep -i ssh | grep "SSH_AUTH_SOCK" | cut -d= -f2)
-echo "* * * * * export DISPLAY=:0 && export SSH_AUTH_SOCK=$SSH_AUTH && /home/cumorris/scripts/nagios-check" >> ~/mycron
+echo "* * * * * export DISPLAY=:0 && export SSH_AUTH_SOCK=$SSH_AUTH && ~/lcsee-scripts/nagios-check" >> ~/mycron
 crontab -l > ~/mycron
 crontab ~/mycron
 
@@ -87,12 +87,12 @@ crontab ~/mycron
 # method to check server nagios
 check_nagios001(){
     $CDHOME
-    HOST_STATUS='$(ssh nagios001 sudo nagios3stats | grep "Hosts Up/Down/Unreach:")'
-    HOSTS_DOWN='$(ssh nagios001 sudo nagios3stats | grep "Hosts Up/Down/Unreach:" | cut -d/ -f4)'
-    #HOST_DOWN='$(ssh nagios001 sudo nagios3stats | grep "Hosts In Downtime:")'
+    HOST_STATUS='$(ssh -A nagios001 sudo nagios3stats | grep "Hosts Up/Down/Unreach:")'
+    HOSTS_DOWN='$(ssh -A nagios001 sudo nagios3stats | grep "Hosts Up/Down/Unreach:" | cut -d/ -f4)'
+    #HOST_DOWN='$(ssh -A nagios001 sudo nagios3stats | grep "Hosts In Downtime:")'
     if [ "$HOSTS_DOWN" != 0 ]; then
-	notify-send "Nagios001 Server Hosts down:" `ssh nagios001 sudo nagios3stats | grep "Hosts Up/Down/Unreach:" | cut -d/ -f4`
-	notify-send "Nagios001 Machines in Downtime:" `ssh nagios001 sudo nagios3stats | grep "Hosts In Downtime:"| cut -d: -f2`
+	notify-send "Nagios001 Server Hosts down:" `ssh -A nagios001 sudo nagios3stats | grep "Hosts Up/Down/Unreach:" | cut -d/ -f4`
+	notify-send "Nagios001 Machines in Downtime:" `ssh -A nagios001 sudo nagios3stats | grep "Hosts In Downtime:"| cut -d: -f2`
     fi
     $CDHOME
 }
@@ -110,15 +110,6 @@ copy_profile(){
     cp .profile ~/
     $CDHOME
 }
-
-
-#keys(){
-#    if [ "$(ssh-add -L | grep "The agent has no identities.")" == "The agent has no identities." ]; then
-#	zenity --warning --title "Add your keys br0!" --text 'echo "Please Load your SSH Keys before running this script"'
-#    else#
-#	tput setaf 2;echo "Your SSH Keys have been successfully loaded"; tput sgr0
-#    fi
-#}
 
 # method to change unity bar config
 change_unity_bar(){
@@ -159,11 +150,12 @@ open_windows(){
 ########################################
 
 
-
+# Check to see if SSH Keys have been loaded
 if [ "$(ssh-add -L | grep "The agent has no identities.")" == "The agent has no identities." ]; then
     add_ssh_keys
 fi
 
+#######################################################################
 echo " "
 tput setaf 4;echo "########################################"; tput sgr0
 tput setaf 3;echo "Checking Nagios001"; tput sgr0
@@ -171,7 +163,7 @@ check_nagios001
 tput setaf 2;echo "Nagios001 Check Complete"; tput sgr0
 tput setaf 4;echo "########################################"; tput sgr0
 echo " "
-
+######################################################################
 echo " "
 tput setaf 4;echo "########################################"; tput sgr0
 tput setaf 3;echo "Changing background"; tput sgr0
@@ -179,7 +171,7 @@ change_background
 tput setaf 2;echo "Changing Background Complete"; tput sgr0
 tput setaf 4;echo "########################################"; tput sgr0
 echo " "
-
+#######################################################################
 echo " "
 tput setaf 4;echo "########################################"; tput sgr0
 tput setaf 3;echo "Changing Unity Bar Configuration"; tput sgr0
@@ -189,7 +181,7 @@ fi
 tput setaf 2;echo "Unity Bar Configuration has been changed"; tput sgr0
 tput setaf 4;echo "########################################"; tput sgr0
 echo " "
-
+#######################################################################
 echo " "
 tput setaf 4;echo "########################################"; tput sgr0
 tput setaf 3;echo "Copying .bashrc into place"; tput sgr0
@@ -197,7 +189,7 @@ copy_bashrc
 tput setaf 2;echo "Bashrc put into place"; tput sgr0
 tput setaf 4;echo "########################################"; tput sgr0
 echo " "
-
+#######################################################################
 echo " "
 tput setaf 4;echo "########################################"; tput sgr0
 tput setaf 3;echo "Copying .profile into place"; tput sgr0
@@ -207,7 +199,7 @@ fi
 tput setaf 2;echo "Profile copied into place"; tput sgr0
 tput setaf 4;echo "########################################"; tput sgr0
 echo " "
-
+#######################################################################
 echo " "
 tput setaf 4;echo "########################################"; tput sgr0
 tput setaf 3;echo "Getting lcsee-scripts for cumorris"; tput sgr0
@@ -218,7 +210,7 @@ fi
 tput setaf 2;echo "lcsee-scripts downloaded"; tput sgr0
 tput setaf 4;echo "########################################"; tput sgr0
 echo " "
-
+#######################################################################
 echo " "
 tput setaf 4;echo "########################################"; tput sgr0
 tput setaf 3;echo "Getting build-media for cumorris"; tput sgr0
@@ -229,7 +221,7 @@ fi
 tput setaf 2;echo "Build-media downloaded"; tput sgr0
 tput setaf 4;echo "########################################"; tput sgr0
 echo " "
-
+########################################################################
 echo " "
 tput setaf 4;echo "########################################"; tput sgr0
 tput setaf 3;echo "Getting ruby-shoes-control-center for cumorris"; tput sgr0
@@ -240,7 +232,7 @@ fi
 tput setaf 2;echo "ruby-shoes-control-center downloaded"; tput sgr0
 tput setaf 4;echo "########################################"; tput sgr0
 echo " "
-
+########################################################################
 echo " "
 tput setaf 4;echo "########################################"; tput sgr0
 tput setaf 3;echo "Getting scripts for cumorris"; tput sgr0
@@ -252,7 +244,7 @@ fi
 tput setaf 2;echo "Scripts downloaded"; tput sgr0
 tput setaf 4;echo "########################################"; tput sgr0
 echo " "
-
+########################################################################
 echo " "
 tput setaf 4;echo "########################################"; tput sgr0
 tput setaf 3;echo "Calling your open-windows script"; tput sgr0
@@ -260,4 +252,4 @@ open_windows
 tput setaf 2;echo "Calling your open-windows script"; tput sgr0
 tput setaf 4;echo "########################################"; tput sgr0
 echo " "
-
+########################################################################
