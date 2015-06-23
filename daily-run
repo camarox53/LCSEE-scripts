@@ -1,0 +1,263 @@
+#! /usr/bin/env bash
+
+# CONSTANTS
+CDHOME='cd'
+CD_SSH="cd /media/${USER}/${USER}/.ssh"
+CD_MEDIA="cd /media/${USER}/${USER}"
+GET_LCSEE_SCRIPTS='git clone https://github.com/camarox53/LCSEE-scripts'
+GET_SCRIPTS='git clone https://github.com/camarox53/scripts'
+GET_BUILD_MEDIA='git clone https://github.com/camarox53/build-media'
+GET_CONTROL_CENTER='git clone https://github.com/camarox53/ruby-shoes-control-center'
+RM_LCSEE='rm -rf LCSEE-scripts'
+RM_SCRIPTS='rm -rf scripts'
+RM_BUILD_MEDIA='rm -rf build-media'
+RM_CONTROL_CENTER='rm -rf ruby-shoes-control-center'
+
+# method to get lcsee-scripts
+get_lcsee-scripts(){
+    $CDHOME
+    $GET_LCSEE_SCRIPTS
+    $CDHOME
+}
+
+# method to get scripts
+get_scripts(){
+    $CDHOME
+    $GET_SCRIPTS
+    $CDHOME    
+}
+
+# method to get control center
+get_control_center(){
+    $CDHOME
+    $GET_CONTROL_CENTER
+    $CDHOME
+    
+}
+
+# method to get build media
+get_build-media(){
+    $CDHOME
+    $GET_BUILD_MEDIA
+    $CDHOME
+}
+
+# method to remove control center
+remove_control_center(){
+    $CDHOME
+    $RM_CONTROL_CENTER
+    $CDHOME
+}
+
+# method to remove lcsee-scripts
+remove_lcsee-scripts(){
+    $CDHOME
+    $RM_LCSEE
+    $CDHOME
+}
+
+# method to remove scripts
+remove_scripts(){
+    $CDHOME
+    $RM_SCRIPTS
+    $CDHOME
+}
+
+# method to remove build-media
+remove_build-media(){
+    $CDHOME
+    $RM_BUILD_MEDIA
+    $CDHOME
+}
+
+# method to add SSH keys
+add_ssh_keys(){
+    # Make this use zenity to get password
+    $CD_SSH
+    ssh-add identity
+    $CDHOME
+}
+
+SSH_AUTH=$(env |grep -i ssh | grep "SSH_AUTH_SOCK" | cut -d= -f2)
+echo "* * * * * export DISPLAY=:0 && export SSH_AUTH_SOCK=$SSH_AUTH && /home/cumorris/scripts/nagios-check" >> ~/mycron
+crontab -l > ~/mycron
+crontab ~/mycron
+
+
+# method to check server nagios
+check_nagios001(){
+    $CDHOME
+    HOST_STATUS='$(ssh nagios001 sudo nagios3stats | grep "Hosts Up/Down/Unreach:")'
+    HOSTS_DOWN='$(ssh nagios001 sudo nagios3stats | grep "Hosts Up/Down/Unreach:" | cut -d/ -f4)'
+    #HOST_DOWN='$(ssh nagios001 sudo nagios3stats | grep "Hosts In Downtime:")'
+    if [ "$HOSTS_DOWN" != 0 ]; then
+	notify-send "Nagios001 Server Hosts down:" `ssh nagios001 sudo nagios3stats | grep "Hosts Up/Down/Unreach:" | cut -d/ -f4`
+	notify-send "Nagios001 Machines in Downtime:" `ssh nagios001 sudo nagios3stats | grep "Hosts In Downtime:"| cut -d: -f2`
+    fi
+    $CDHOME
+}
+
+# method to cp .bashrc into place
+copy_bashrc(){
+    $CD_MEDIA
+    cp .bashrc ~/
+    $CDHOME
+}
+
+# method to copy .profile into place
+copy_profile(){
+    $CD_MEDIA
+    cp .profile ~/
+    $CDHOME
+}
+
+
+#keys(){
+#    if [ "$(ssh-add -L | grep "The agent has no identities.")" == "The agent has no identities." ]; then
+#	zenity --warning --title "Add your keys br0!" --text 'echo "Please Load your SSH Keys before running this script"'
+#    else#
+#	tput setaf 2;echo "Your SSH Keys have been successfully loaded"; tput sgr0
+#    fi
+#}
+
+# method to change unity bar config
+change_unity_bar(){
+    # add control center to unity bar
+    $CDHOME
+#    cp ~/scripts/10_local-unity-launcher.gschema.override /usr/share/glib-2.0/schemas/10_local-unity-launcher.gschema.override
+    gsettings set com.canonical.Unity.Launcher favorites "['ubiquity-gtkui.desktop', 'nautilus-home.desktop', 'chromium-browser.desktop', 'gnome-terminal.desktop']"
+    sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
+    $CDHOME
+}
+
+
+# method to change background picture
+change_background(){
+    $CDHOME
+    result=`pgrep X`
+    if [ $? -eq 0 ]; then
+	gsettings set org.gnome.desktop.background picture-uri file:///media/${USER}/${USER}/background.jpg
+    fi
+    $CDHOME
+}
+
+# method to add scripts to my G keys LOL
+configure_gkeys(){
+    $CDHOME
+    $CDHOME
+}
+
+open_windows(){
+    . /media/${USER}/${USER}/open-windows
+}
+
+################# NOTES ################
+## http://superuser.com/questions/342107/getting-macro-keys-from-a-razer-blackwidow-to-work-on-linux
+
+
+# have a check that makes sure your usb is there before running some methods
+########################################
+
+
+
+if [ "$(ssh-add -L | grep "The agent has no identities.")" == "The agent has no identities." ]; then
+    add_ssh_keys
+fi
+
+echo " "
+tput setaf 4;echo "########################################"; tput sgr0
+tput setaf 3;echo "Checking Nagios001"; tput sgr0
+check_nagios001
+tput setaf 2;echo "Nagios001 Check Complete"; tput sgr0
+tput setaf 4;echo "########################################"; tput sgr0
+echo " "
+
+echo " "
+tput setaf 4;echo "########################################"; tput sgr0
+tput setaf 3;echo "Changing background"; tput sgr0
+change_background
+tput setaf 2;echo "Changing Background Complete"; tput sgr0
+tput setaf 4;echo "########################################"; tput sgr0
+echo " "
+
+echo " "
+tput setaf 4;echo "########################################"; tput sgr0
+tput setaf 3;echo "Changing Unity Bar Configuration"; tput sgr0
+if [ "${USER}" == "cumorris" ]; then
+    change_unity_bar
+fi
+tput setaf 2;echo "Unity Bar Configuration has been changed"; tput sgr0
+tput setaf 4;echo "########################################"; tput sgr0
+echo " "
+
+echo " "
+tput setaf 4;echo "########################################"; tput sgr0
+tput setaf 3;echo "Copying .bashrc into place"; tput sgr0
+copy_bashrc
+tput setaf 2;echo "Bashrc put into place"; tput sgr0
+tput setaf 4;echo "########################################"; tput sgr0
+echo " "
+
+echo " "
+tput setaf 4;echo "########################################"; tput sgr0
+tput setaf 3;echo "Copying .profile into place"; tput sgr0
+if [ "${USER}" != "cumorris" ]; then
+    copy_profile
+fi
+tput setaf 2;echo "Profile copied into place"; tput sgr0
+tput setaf 4;echo "########################################"; tput sgr0
+echo " "
+
+echo " "
+tput setaf 4;echo "########################################"; tput sgr0
+tput setaf 3;echo "Getting lcsee-scripts for cumorris"; tput sgr0
+if [ "${USER}" == "cumorris" ]; then
+    remove_lcsee-scripts
+    get_lcsee-scripts
+fi
+tput setaf 2;echo "lcsee-scripts downloaded"; tput sgr0
+tput setaf 4;echo "########################################"; tput sgr0
+echo " "
+
+echo " "
+tput setaf 4;echo "########################################"; tput sgr0
+tput setaf 3;echo "Getting build-media for cumorris"; tput sgr0
+if [ "${USER}" == "cumorris" ]; then
+    remove_build-media
+    get_build-media
+fi
+tput setaf 2;echo "Build-media downloaded"; tput sgr0
+tput setaf 4;echo "########################################"; tput sgr0
+echo " "
+
+echo " "
+tput setaf 4;echo "########################################"; tput sgr0
+tput setaf 3;echo "Getting ruby-shoes-control-center for cumorris"; tput sgr0
+if [ "${USER}" == "cumorris" ]; then
+    remove_control_center
+    get_control_center
+fi
+tput setaf 2;echo "ruby-shoes-control-center downloaded"; tput sgr0
+tput setaf 4;echo "########################################"; tput sgr0
+echo " "
+
+echo " "
+tput setaf 4;echo "########################################"; tput sgr0
+tput setaf 3;echo "Getting scripts for cumorris"; tput sgr0
+if [ "${USER}" == "cumorris" ]; then
+    # remove_scripts
+    echo "Coming Soon" 
+    # get_scripts
+fi
+tput setaf 2;echo "Scripts downloaded"; tput sgr0
+tput setaf 4;echo "########################################"; tput sgr0
+echo " "
+
+echo " "
+tput setaf 4;echo "########################################"; tput sgr0
+tput setaf 3;echo "Calling your open-windows script"; tput sgr0
+open_windows
+tput setaf 2;echo "Calling your open-windows script"; tput sgr0
+tput setaf 4;echo "########################################"; tput sgr0
+echo " "
+
