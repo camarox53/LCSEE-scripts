@@ -78,11 +78,12 @@ add_ssh_keys(){
     $CDHOME
 }
 
+setup_cron(){
 SSH_AUTH=$(env |grep -i ssh | grep "SSH_AUTH_SOCK" | cut -d= -f2)
 echo "* * * * * export DISPLAY=:0 && export SSH_AUTH_SOCK=$SSH_AUTH && ~/lcsee-scripts/nagios-check" >> ~/mycron
 crontab -l > ~/mycron
 crontab ~/mycron
-
+}
 
 # method to check server nagios
 check_nagios001(){
@@ -242,6 +243,14 @@ if [ "${USER}" == "cumorris" ]; then
     # get_scripts
 fi
 tput setaf 2;echo "Scripts downloaded"; tput sgr0
+tput setaf 4;echo "########################################"; tput sgr0
+echo " "
+########################################################################
+echo " "
+tput setaf 4;echo "########################################"; tput sgr0
+tput setaf 3;echo "Starting cron job"; tput sgr0
+setup_cron
+tput setaf 2;echo "Cron job started"; tput sgr0
 tput setaf 4;echo "########################################"; tput sgr0
 echo " "
 ########################################################################
