@@ -1,0 +1,214 @@
+#!/usr/bin/ruby
+
+require 'gtk3'
+
+BUTTON_SIZE = 64
+BUTTON_LENGTH = 128
+class SystemsHUD < Gtk::Window
+
+    def initialize
+	super
+	home
+    end
+
+    def home
+	home_window=Gtk::Window.new
+	home_window.set_border_width 10
+	home_window.override_background_color :normal, Gdk::RGBA::new(0,0,0,1)
+	home_window.title = ":)"
+	home_window.set_size_request 50, 1050
+	home_window.set_resizable false
+	home_window.set_window_position(Gtk::Window::Position::CENTER)
+	home_window.set_keep_above true
+	home_window.signal_connect "destroy" do
+	    Gtk.main_quit
+	end
+
+	scripts_button = Gtk::Button.new(:label => "Scripts")
+	scripts_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	scripts_button.signal_connect "clicked" do
+	    scripts
+	end
+
+	sites_button = Gtk::Button.new(:label => "Sites")
+	sites_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	sites_button.signal_connect "clicked" do
+	    sites
+	end
+	
+	buttons_box = Gtk::Box.new :vertical, 5
+	buttons_box.add(scripts_button)
+	buttons_box.add(sites_button)
+	home_window.add(buttons_box)	
+	home_window.show_all
+    end
+
+    def scripts
+	scripts_window = Gtk::Window.new
+	scripts_window.set_border_width 10
+	scripts_window.override_background_color :normal, Gdk::RGBA::new(0,0,0,1)
+	scripts_window.title = "Useful Scripts"
+	scripts_window.set_default_size 300, 300
+	scripts_window.set_window_position(Gtk::Window::Position::CENTER)
+	
+	infco_button = Gtk::Button.new(:label => "infco")
+	infco_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	infco_button.signal_connect "clicked" do
+	    infcocheck = File.expand_path("../infco-check", __FILE__)	    
+	    system "gnome-terminal -e #{infcocheck}"	    
+	end
+	
+	buttons_box = Gtk::Box.new :vertical, 5
+	buttons_box.add(infco_button)
+	scripts_window.add(buttons_box)
+	scripts_window.show_all
+    end
+
+    def sites
+	sites_window = Gtk::Window.new
+	sites_window.set_border_width 10
+	sites_window.override_background_color :normal, Gdk::RGBA::new(0,0,0,1)
+	sites_window.title = "Useful Websites"
+	sites_window.set_default_size 300, 300
+	sites_window.set_window_position(Gtk::Window::Position::CENTER)
+
+	nagios_server_button = Gtk::Button.new(:label => "server nagios")
+	nagios_server_button.set_size_request BUTTON_LENGTH, BUTTON_SIZE
+	nagios_server_button.signal_connect "clicked" do
+	    webpage("https://nagios.lcsee.wvu.edu/nagios3")
+	    sites_window.destroy	    
+	end
+	nagios_lab_button = Gtk::Button.new(:label => "lab nagios")
+	nagios_lab_button.set_size_request BUTTON_LENGTH, BUTTON_SIZE
+	nagios_lab_button.signal_connect "clicked" do
+	    webpage("https://labnagios.lcsee.wvu.edu/nagios3")
+	    sites_window.destroy
+	end	    
+	infco_button = Gtk::Button.new(:label => "infco")
+	infco_button.set_size_request BUTTON_LENGTH, BUTTON_SIZE
+	infco_button.signal_connect "clicked" do
+	    webpage("https://infco.lcseecloud.wvu.edu/infco")		
+	    sites_window.destroy
+	end
+	faq_button = Gtk::Button.new(:label => "faq")
+	faq_button.set_size_request BUTTON_LENGTH, BUTTON_SIZE
+	faq_button.signal_connect "clicked" do
+	    webpage("https://wiki.lcsee.wvu.edu/lcseehelpdesk/faq/")
+	    sites_window.destroy
+	end
+	lsr_button = Gtk::Button.new(:label => "lsr")
+	lsr_button.set_size_request BUTTON_LENGTH, BUTTON_SIZE
+	lsr_button.signal_connect "clicked" do
+	    webpage("https://lcsee.wvu.edu/lcsee-docs")
+	    sites_window.destroy
+	end
+	outlook_button = Gtk::Button.new(:label => "outlook")
+	outlook_button.set_size_request BUTTON_LENGTH, BUTTON_SIZE
+	outlook_button.signal_connect "clicked" do
+	    webpage("http://login.microsoftonline.com")
+	    sites_window.destroy
+	end
+	svn_button = Gtk::Button.new(:label => "svn")
+	svn_button.set_size_request BUTTON_LENGTH, BUTTON_SIZE
+	svn_button.signal_connect "clicked" do
+	    webpage("https://loud.lcsee.wvu.edu/loud")
+	    sites_window.destroy
+	end
+	g_plus_button = Gtk::Button.new(:label => "g+")
+	g_plus_button.set_size_request BUTTON_LENGTH, BUTTON_SIZE
+	g_plus_button.signal_connect "clicked" do
+	    webpage("https://plus.google.com/u/0/communities/103766111706586762839")
+	    sites_window.destroy
+	end
+	spotify_button = Gtk::Button.new(:label => "spotify")
+	spotify_button.set_size_request BUTTON_LENGTH, BUTTON_SIZE
+	spotify_button.signal_connect "clicked" do
+	    webpage("http://play.spotify.com")
+	    sites_window.destroy
+	end
+	slack_button = Gtk::Button.new(:label => "slack")
+	slack_button.set_size_request BUTTON_LENGTH, BUTTON_SIZE
+	slack_button.signal_connect "clicked" do
+	    webpage("https://lcseesystems.slack.com")
+	    sites_window.destroy
+	end
+	wiki_button = Gtk::Button.new(:label => "wiki")
+	wiki_button.set_size_request BUTTON_LENGTH, BUTTON_SIZE
+	wiki_button.signal_connect "clicked" do
+	    webpage("https://wiki.lcsee.wvu.edu/sysstaff/")
+	    sites_window.destroy
+	end
+	rt_button = Gtk::Button.new(:label => "rt002")
+	rt_button.set_size_request BUTTON_LENGTH, BUTTON_SIZE
+	rt_button.signal_connect "clicked" do
+	    webpage("https://rt002.lcsee.wvu.edu/request-tracker/")
+	    sites_window.destroy
+	end
+	whentowork_button = Gtk::Button.new(:label => "whentowork")
+	whentowork_button.set_size_request BUTTON_LENGTH, BUTTON_SIZE
+	whentowork_button.signal_connect "clicked" do
+	    webpage("https://whentowork.com/login")
+	    sites_window.destroy
+	end
+	webgit_button = Gtk::Button.new(:label => "webgit")
+	webgit_button.set_size_request BUTTON_LENGTH, BUTTON_SIZE
+	webgit_button.signal_connect "clicked" do
+	    webpage("https://webgit.lcseecloud.net")
+	    sites_window.destroy
+	end
+	github_button = Gtk::Button.new(:label => "github")
+	github_button.set_size_request BUTTON_LENGTH, BUTTON_SIZE
+	github_button.signal_connect "clicked" do
+	    webpage("https://github.com")
+	    sites_window.destroy
+	end
+	whatsup_button = Gtk::Button.new(:label => "don't click")
+	whatsup_button.set_size_request BUTTON_LENGTH, BUTTON_SIZE
+	whatsup_button.signal_connect "clicked" do
+	    webpage("http://heyyeyaaeyaaaeyaeyaa.com/")
+	    sites_window.destroy
+	end
+	
+	buttons_box = Gtk::Box.new :vertical, 5
+	buttons_sub_1 = Gtk::Box.new :horizontal, 5
+	buttons_sub_2 = Gtk::Box.new :horizontal, 5
+	buttons_sub_3 = Gtk::Box.new :horizontal, 5
+	buttons_sub_4 = Gtk::Box.new :horizontal, 5
+	
+	buttons_sub_1.add(slack_button)
+	buttons_sub_1.add(rt_button)
+	buttons_sub_1.add(outlook_button)
+	buttons_sub_1.add(lsr_button)
+	buttons_sub_2.add(nagios_lab_button)
+	buttons_sub_2.add(nagios_server_button)
+	buttons_sub_2.add(g_plus_button)
+	buttons_sub_2.add(faq_button)
+	buttons_sub_3.add(infco_button)
+	buttons_sub_3.add(whentowork_button)
+	buttons_sub_3.add(svn_button)
+	buttons_sub_3.add(wiki_button)
+	buttons_sub_4.add(webgit_button)
+	buttons_sub_4.add(github_button)
+	buttons_sub_4.add(spotify_button)
+	buttons_sub_4.add(whatsup_button)
+
+	buttons_box.add(buttons_sub_1)
+	buttons_box.add(buttons_sub_2)
+	buttons_box.add(buttons_sub_3)
+	buttons_box.add(buttons_sub_4)
+
+	sites_window.add(buttons_box)
+	sites_window.show_all
+
+    end
+
+    def webpage(url)
+	link = url
+	system "chromium-browser -new-tab #{link} &"
+    end
+
+end
+
+Gtk.init
+window = SystemsHUD.new
+Gtk.main
