@@ -255,7 +255,7 @@ echo " "
 echo " "
 tput setaf 4;echo "########################################"; tput sgr0
 tput setaf 3;echo "Starting Control Center"; tput sgr0
-. ~/lcsee-scripts/setup-hub
+ruby ~/LCSEE-scripts/systems-hud
 tput setaf 2;echo "Control Center Started"; tput sgr0
 tput setaf 4;echo "########################################"; tput sgr0
 echo " "
