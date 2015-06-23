@@ -1,7 +1,8 @@
-#! /usr/bin/env ruby
+#!/usr/bin/ruby
 
 require 'gtk3'
 
+ICON_BUTTON = 24
 BUTTON_SIZE = 64
 BUTTON_LENGTH = 128
 class SystemsHUD < Gtk::Window
@@ -13,30 +14,38 @@ class SystemsHUD < Gtk::Window
 
     def home
 	home_window=Gtk::Window.new
-	home_window.set_border_width 10
-	home_window.override_background_color :normal, Gdk::RGBA::new(0,0,0,1)
+	home_window.set_border_width 2
 	home_window.title = ":)"
-	home_window.set_size_request 50, 1050
+	home_window.set_size_request 30, 30
+	home_window.set_decorated false
 	home_window.set_resizable false
-	home_window.set_window_position(Gtk::Window::Position::CENTER)
 	home_window.set_keep_above true
+	home_window.move(2000,2000)
 	home_window.signal_connect "destroy" do
 	    Gtk.main_quit
 	end
 
-	scripts_button = Gtk::Button.new(:label => "Scripts")
-	scripts_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	scripts_icon_image = Gdk::Pixbuf.new :file => File.expand_path("../icons/script_code_red.png", __FILE__)
+	sites_icon_image = Gdk::Pixbuf.new :file => File.expand_path("../icons/page_white_world.png", __FILE__)
+
+	scripts_icon = Gtk::Image.new :pixbuf => scripts_icon_image
+	sites_icon = Gtk::Image.new :pixbuf => sites_icon_image
+
+	scripts_button = Gtk::Button.new()
+	scripts_button.add(scripts_icon)
+	scripts_button.set_size_request ICON_BUTTON, ICON_BUTTON
 	scripts_button.signal_connect "clicked" do
 	    scripts
 	end
 
-	sites_button = Gtk::Button.new(:label => "Sites")
-	sites_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	sites_button = Gtk::Button.new()
+	sites_button.add(sites_icon)
+	sites_button.set_size_request ICON_BUTTON, ICON_BUTTON
 	sites_button.signal_connect "clicked" do
 	    sites
 	end
 	
-	buttons_box = Gtk::Box.new :vertical, 5
+	buttons_box = Gtk::Box.new :horizontal, 5
 	buttons_box.add(scripts_button)
 	buttons_box.add(sites_button)
 	home_window.add(buttons_box)	
@@ -56,6 +65,7 @@ class SystemsHUD < Gtk::Window
 	infco_button.signal_connect "clicked" do
 	    infcocheck = File.expand_path("../infco-check", __FILE__)	    
 	    system "gnome-terminal -e #{infcocheck}"	    
+	    scripts_window.destroy	    
 	end
 	
 	buttons_box = Gtk::Box.new :vertical, 5
@@ -71,6 +81,7 @@ class SystemsHUD < Gtk::Window
 	sites_window.title = "Useful Websites"
 	sites_window.set_default_size 300, 300
 	sites_window.set_window_position(Gtk::Window::Position::CENTER)
+	sites_window.set_resizable false
 
 	nagios_server_button = Gtk::Button.new(:label => "server nagios")
 	nagios_server_button.set_size_request BUTTON_LENGTH, BUTTON_SIZE
