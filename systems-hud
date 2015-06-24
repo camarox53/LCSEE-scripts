@@ -68,8 +68,8 @@ class SystemsHUD < Gtk::Window
 	scripts_window.override_background_color :normal, Gdk::RGBA::new(0,0,0,1)
 	scripts_window.title = "Useful Scripts"
 	scripts_window.set_default_size 300, 300
-	scripts_window.set_window_position(Gtk::Window::Position::CENTER)
-	
+	scripts_window.set_window_position(Gtk::Window::Position::MOUSE)
+	scripts_window.set_keep_above true	
 	infco_button = Gtk::Button.new(:label => "infco")
 	infco_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
 	infco_button.signal_connect "clicked" do
@@ -90,8 +90,9 @@ class SystemsHUD < Gtk::Window
 	sites_window.override_background_color :normal, Gdk::RGBA::new(0,0,0,1)
 	sites_window.title = "Useful Websites"
 	sites_window.set_default_size 300, 300
-	sites_window.set_window_position(Gtk::Window::Position::CENTER)
+	sites_window.set_window_position(Gtk::Window::Position::MOUSE)
 	sites_window.set_resizable false
+	sites_window.set_keep_above true
 
 	nagios_server_button = Gtk::Button.new(:label => "server nagios")
 	nagios_server_button.set_size_request BUTTON_LENGTH, BUTTON_SIZE
@@ -230,6 +231,7 @@ class SystemsHUD < Gtk::Window
 	ssh_window.set_window_position(Gtk::Window::Position::MOUSE)
 	ssh_window.set_default_size 300, 300
 	ssh_window.set_resizable false
+	ssh_window.set_keep_above true
 
 	nagios001_button = Gtk::Button.new(:label => "Nagios001")
 	nagios001_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
@@ -256,11 +258,13 @@ class SystemsHUD < Gtk::Window
 	    system("gnome-terminal -e #{sysstaff_ssh} &")
 	    ssh_window.destroy	    
 	end
-#	aer137_button = Gtk::Button.new(:label => "AER 137")
-#	aer137_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
-#	aer137_button.signal_connect "clicked" do
-#	Cam is writing a script for this, too
-#	end
+	aer137_button = Gtk::Button.new(:label => "AER 137")
+	aer137_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	aer137_button.signal_connect "clicked" do
+            ssh137 = File.expand_path("../137ssh",__FILE__)
+	    system("gnome-terminal -e #{ssh137} &")
+	    ssh_window.destroy
+        end
 	shell_button = Gtk::Button.new(:label => "Shell")
 	shell_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
 	shell_button.signal_connect "clicked" do
@@ -284,7 +288,7 @@ class SystemsHUD < Gtk::Window
 	buttons_box.add(shell_button)
 	buttons_box.add(prop_button)
 	buttons_box.add(systems_machines_button)
-#	buttons_box.add(aer137_button)
+	buttons_box.add(aer137_button)
 	buttons_box.add(nagios001_button)
 	buttons_box.add(nodes_button)
 	buttons_box.add(tnode_button)
