@@ -2,7 +2,11 @@
 doshit(){
 machine=$(zenity --entry --title "Machine name" --text "Please enter the machine number that you wish to SSH to")
 
+<<<<<<< HEAD:systems-ssh
 gnome-terminal -x bash -c "ssh -AX cseesystems${machine}" 
 }
 
 doshit
+=======
+gnome-terminal -x bash -c "ssh -AX -o StrictHostKeyChecking=no cseesystems${machine}"
+>>>>>>> ad4db17b3a38c06e5058b6aa9b1b94a60597edea:systemsssh
