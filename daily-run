@@ -126,7 +126,9 @@ echo " "
 echo " "
 tput setaf 4;echo "########################################"; tput sgr0
 tput setaf 3;echo "Checking Nagios001"; tput sgr0
-check_nagios001
+if [ "${USER}" == "cumorris" ]; then
+    check_nagios001
+fi
 tput setaf 2;echo "Nagios001 Check Complete"; tput sgr0
 tput setaf 4;echo "########################################"; tput sgr0
 echo " "
