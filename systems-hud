@@ -27,9 +27,11 @@ class SystemsHUD < Gtk::Window
 
 	scripts_icon_image = Gdk::Pixbuf.new :file => File.expand_path("../icons/script_code_red.png", __FILE__)
 	sites_icon_image = Gdk::Pixbuf.new :file => File.expand_path("../icons/page_white_world.png", __FILE__)
+	ssh_icon_image = Gdk::Pixbuf.new :file => File.expand_path("../icons/application_osx_terminal.png", __FILE__)	
 
 	scripts_icon = Gtk::Image.new :pixbuf => scripts_icon_image
 	sites_icon = Gtk::Image.new :pixbuf => sites_icon_image
+	ssh_icon = Gtk::Image.new :pixbuf => ssh_icon_image
 
 	scripts_button = Gtk::Button.new()
 	scripts_button.add(scripts_icon)
@@ -44,10 +46,18 @@ class SystemsHUD < Gtk::Window
 	sites_button.signal_connect "clicked" do
 	    sites
 	end
-	
+
+	ssh_button = Gtk::Button.new()
+	ssh_button.add(ssh_icon)
+	ssh_button.set_size_request ICON_BUTTON, ICON_BUTTON
+	ssh_button.signal_connect "clicked" do
+	    ssh
+	end
+	    
 	buttons_box = Gtk::Box.new :horizontal, 5
 	buttons_box.add(scripts_button)
 	buttons_box.add(sites_button)
+	buttons_box.add(ssh_button)
 	home_window.add(buttons_box)	
 	home_window.show_all
     end
@@ -213,9 +223,95 @@ class SystemsHUD < Gtk::Window
 
     end
 
+    def ssh
+	ssh_window = Gtk::Window.new
+	ssh_window.set_border_width 10
+	ssh_window.title = "ssh"
+	ssh_window.set_window_position(Gtk::Window::Position::MOUSE)
+	ssh_window.set_default_size 300, 300
+	ssh_window.set_resizable false
+
+	nagios001_button = Gtk::Button.new(:label => "Nagios001")
+	nagios001_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	nagios001_button.signal_connect "clicked" do
+	    sshlink("nagios001")
+	    ssh_window.destroy
+	end	    
+	tnode_button = Gtk::Button.new(:label => "tnode")
+	tnode_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	tnode_button.signal_connect "clicked" do
+	    sshlink("tnode001")
+	    ssh_window.destroy
+	end	    
+	nodes_button = Gtk::Button.new(:label => "Nodes")
+	nodes_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	nodes_button.signal_connect "clicked" do
+	    nodes
+	    ssh_window.destroy
+	end
+	systems_machines_button = Gtk::Button.new(:label => "Systems machines")
+	systems_machines_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	systems_machines_button.signal_connect "clicked" do
+	    sysstaff_ssh = File.expand_path("../systems-ssh",__FILE__)
+	    system("gnome-terminal -e #{sysstaff_ssh} &")
+	    ssh_window.destroy	    
+	end
+#	aer137_button = Gtk::Button.new(:label => "AER 137")
+#	aer137_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+#	aer137_button.signal_connect "clicked" do
+#	Cam is writing a script for this, too
+#	end
+	shell_button = Gtk::Button.new(:label => "Shell")
+	shell_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	shell_button.signal_connect "clicked" do
+	    sshlink("shell")
+	    ssh_window.destroy	    
+ 	end
+	prop_button = Gtk::Button.new(:label => "Proprietary")
+	prop_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	prop_button.signal_connect "clicked" do
+	    sshlink("proprietary")
+	    ssh_window.destroy
+	end
+	lpreciseshell_button = Gtk::Button.new(:label => "lprecise")
+	lpreciseshell_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	lpreciseshell_button.signal_connect "clicked" do
+	    sshlink("lpreciseshell001")
+	    ssh_window.destroy
+	end
+	buttons_box = Gtk::Box.new :vertical, 5
+	
+	buttons_box.add(shell_button)
+	buttons_box.add(prop_button)
+	buttons_box.add(systems_machines_button)
+#	buttons_box.add(aer137_button)
+	buttons_box.add(nagios001_button)
+	buttons_box.add(nodes_button)
+	buttons_box.add(tnode_button)
+
+	ssh_window.add(buttons_box)
+	ssh_window.show_all
+		
+    end
+
+    def nodes()
+	nodes_window = Gtk::Window.new
+
+	nodes_window.show_all
+    end
+
     def webpage(url)
 	link = url
 	system "chromium-browser -new-tab #{link} &"
+    end
+
+    def sshlink(location)
+	machine = location
+	if machine === "shell" || machine === "proprietary" || machine === "lpreciseshell001"
+	    system "gnome-terminal -e 'ssh -AXp 20110 #{ENV['USER']}@#{machine}.lcsee.wvu.edu'"
+	else
+	    system "gnome-terminal -e 'ssh -AX #{ENV['USER']}@#{machine}.lcsee.wvu.edu'"
+	end
     end
 
 end

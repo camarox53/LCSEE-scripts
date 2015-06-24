@@ -1,0 +1,73 @@
+#! /usr/bin/env bash
+
+# Must load keys                                                                                                                                                                                          
+if [ "$(ssh-add -L | grep "The agent has no identities.")" == "The agent has no identities." ]; then
+    echo "Your SSH keys appear to not be loaded. Please load them before running this script."
+else
+
+##################### Welcome Line #######################
+echo '######################' > /home/${USER}/infco-check-report
+echo ' ' >> /home/${USER}/infco-check-report
+echo 'Starting Inf-co checks' >> /home/${USER}/infco-check-report
+echo ' ' >> /home/${USER}/infco-check-report
+
+##################### Ldap init #########################
+
+echo '######################' >> /home/${USER}/infco-check-report
+echo ' ' >> /home/${USER}/infco-check-report
+echo 'Running ldap init ' >> /home/${USER}/infco-check-report
+lcsee-ldap-infco --init >> /home/${USER}/infco-check-report
+echo ' ' >> /home/${USER}/infco-check-report
+
+###################### Ldap Check #######################
+
+echo '####################' >> /home/${USER}/infco-check-report
+echo ' ' >> /home/${USER}/infco-check-report
+echo 'Running ldap check ' >> /home/${USER}/infco-check-report
+lcsee-ldap-infco --check >> /home/${USER}/infco-check-report
+echo ' ' >> /home/${USER}/infco-check-report
+
+##################### Ldap Clean #######################
+
+echo '####################' >> /home/${USER}/infco-check-report
+echo ' ' >> /home/${USER}/infco-check-report
+echo 'Running ldap clean ' >> /home/${USER}/infco-check-report
+lcsee-ldap-infco --clean >> /home/${USER}/infco-check-report
+echo ' ' >> /home/${USER}/infco-check-report
+
+################## Automount checks ####################
+
+echo '####################' >> /home/${USER}/infco-check-report
+echo ' ' >> /home/${USER}/infco-check-report
+echo "Starting automount Checks...Please wait."
+automountChecks >> /home/${USER}/infco-check-report
+echo ' ' >> /home/${USER}/infco-check-report
+
+############# Checking Loadbalancer ####################
+
+echo '####################' >> /home/${USER}/infco-check-report
+echo ' ' >> /home/${USER}/infco-check-report
+echo 'SSHing to Proprietary shell' >> /home/${USER}/infco-check-report
+ssh -Aqp 20110 -o stricthostkeychecking=no ${USER}@proprietary.lcsee.wvu.edu 'echo "Proprietary Load balancer in tact"'
+echo 'Proprietary Load Balancer OK' >> /home/${USER}/infco-check-report
+echo 'SSHing to DMZ Shell' >> /home/${USER}/infco-check-report
+ssh -Aqp 20110 -o stricthostkeychecking=no ${USER}@shell.lcsee.wvu.edu 'echo "Shell Load balancer in tact"'
+echo 'Shell Load Balancer OK' >> /home/${USER}/infco-check-report
+
+########## Testing proprietary software ###############
+#echo '####################' >> /home/${USER}/loud-checks
+#echo 'Running matlab on Proprietary' >> /home/${USER}/loud-checks
+#ssh -AXp 20110 -o stricthostkeychecking=no ${USER}@proprietary.lcsee.wvu.edu "/usr/local/MATLAB/R2012a/bin/matlab"
+#echo 'Matlab Testing complete' >> /home/${USER}/loud-checks
+#echo 'Running cadense-610 on Proprietary' >> /home/${USER}/loud-checks
+#ssh -AXp 20110 -o stricthostkeychecking=no ${USER}@proprietary.lcsee.wvu.edu "/usr/bin/cadence-610"
+#echo 'Cadence-610 Testing complete' >> /home/${USER}/loud-checks
+#echo '####################' >> /home/${USER}/loud-checks
+#echo ' ' >> /home/${USER}/loud-checks
+
+######################################################
+
+gedit /home/${USER}/infco-check-report
+
+# Final fi to end the if statement
+fi

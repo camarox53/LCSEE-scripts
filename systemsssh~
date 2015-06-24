@@ -1,5 +1,0 @@
-#! /usr/bin/env bash
-
-machine=$(zenity --entry --title "Machine name" --text "Please enter the machine number that you wish to SSH to")
-
-gnome-terminal -x "ssh "-AX cseesystems${machine}""
