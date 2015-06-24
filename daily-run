@@ -10,6 +10,11 @@ GET_BUILD_MEDIA='git clone https://github.com/camarox53/build-media'
 RM_LCSEE='rm -rf LCSEE-scripts'
 RM_SCRIPTS='rm -rf scripts'
 RM_BUILD_MEDIA='rm -rf build-media'
+CP_BASHRC='cp .bashrc ~/'
+STARTUP='./startup-run'
+HOST_STATUS='$(ssh -A nagios001 sudo nagios3stats | grep "Hosts Up/Down/Unreach:")'
+HOSTS_DOWN='$(ssh -A nagios001 sudo nagios3stats | grep "Hosts Up/Down/Unreach:" | cut -d/ -f4)'
+SSH_AUTH='$(env |grep -i ssh | grep "SSH_AUTH_SOCK" | cut -d= -f2)'
 
 # method to get lcsee-scripts
 get_lcsee-scripts(){
@@ -61,7 +66,7 @@ add_ssh_keys(){
 }
 
 setup_cron(){
-SSH_AUTH=$(env |grep -i ssh | grep "SSH_AUTH_SOCK" | cut -d= -f2)
+# Move this code to constants after getting it to work     
 echo "* * * * * export DISPLAY=:0 && export SSH_AUTH_SOCK=$SSH_AUTH && ~/lcsee-scripts/nagios-check" >> ~/mycron
 crontab -l > ~/mycron
 crontab ~/mycron
@@ -70,12 +75,9 @@ crontab ~/mycron
 # method to check server nagios
 check_nagios001(){
     $CDHOME
-    HOST_STATUS='$(ssh -A nagios001 sudo nagios3stats | grep "Hosts Up/Down/Unreach:")'
-    HOSTS_DOWN='$(ssh -A nagios001 sudo nagios3stats | grep "Hosts Up/Down/Unreach:" | cut -d/ -f4)'
-    #HOST_DOWN='$(ssh -A nagios001 sudo nagios3stats | grep "Hosts In Downtime:")'
     if [ "$HOSTS_DOWN" != 0 ]; then
-	notify-send "Nagios001 Server Hosts down:" `ssh -A nagios001 sudo nagios3stats | grep "Hosts Up/Down/Unreach:" | cut -d/ -f4`
-	notify-send "Nagios001 Machines in Downtime:" `ssh -A nagios001 sudo nagios3stats | grep "Hosts In Downtime:"| cut -d: -f2`
+	notify-send "Nagios001 Server Hosts down:" `ssh -A -o stricthostkeychecking=no nagios001 sudo nagios3stats | grep "Hosts Up/Down/Unreach:" | cut -d/ -f4`
+	notify-send "Nagios001 Machines in Downtime:" `ssh -A -o stricthostkeychecking=no nagios001 sudo nagios3stats | grep "Hosts In Downtime:"| cut -d: -f2`
     fi
     $CDHOME
 }
@@ -83,7 +85,7 @@ check_nagios001(){
 # method to cp .bashrc into place
 copy_bashrc(){
     $CD_MEDIA
-    cp .bashrc ~/
+    $CP_BASHRC
     $CDHOME
 }
 
@@ -94,22 +96,32 @@ configure_gkeys(){
 }
 
 startup_run(){
-    . /media/${USER}/${USER}/startup-run
+    $CD_MEDIA
+    $STARTUP
+    $CDHOME
 }
+
 
 ################# NOTES ################
 ## http://superuser.com/questions/342107/getting-macro-keys-from-a-razer-blackwidow-to-work-on-linux
+####################################### #
 
 
-# have a check that makes sure your usb is there before running some methods
-########################################
-
-
-# Check to see if SSH Keys have been loaded
+# Checking to see if your USB is mounted, if not she wont run br0
+if [ ! -d  /media/${USER}/${USER} ]; then
+    zenity --warning --text "Plug in your USB br0" --title "NO USB FOUND :("
+else
+    
+#######################################################################
+echo " "
+tput setaf 4;echo "########################################"; tput sgr0
+tput setaf 3;echo "Checking your SSH Keys"; tput sgr0
 if [ "$(ssh-add -L | grep "The agent has no identities.")" == "The agent has no identities." ]; then
     add_ssh_keys
 fi
-
+tput setaf 2;echo "SSH Keys have been loaded"; tput sgr0
+tput setaf 4;echo "########################################"; tput sgr0
+echo " "
 #######################################################################
 echo " "
 tput setaf 4;echo "########################################"; tput sgr0
@@ -151,9 +163,8 @@ echo " "
 tput setaf 4;echo "########################################"; tput sgr0
 tput setaf 3;echo "Getting scripts for cumorris"; tput sgr0
 if [ "${USER}" == "cumorris" ]; then
-    # remove_scripts
-    echo "Coming Soon" 
-    # get_scripts
+    remove_scripts
+    get_scripts
 fi
 tput setaf 2;echo "Scripts downloaded"; tput sgr0
 tput setaf 4;echo "########################################"; tput sgr0
@@ -183,3 +194,8 @@ tput setaf 2;echo "Running your usb startup script"; tput sgr0
 tput setaf 4;echo "########################################"; tput sgr0
 echo " "
 ########################################################################
+
+
+# Ending the if statement from the usb check. 
+fi
+
