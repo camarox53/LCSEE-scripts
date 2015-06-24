@@ -2,4 +2,4 @@
 
 machine=$(zenity --entry --title "Machine name" --text "Please enter the machine number that you wish to SSH to")
 
-gnome-terminal -x bash -c "ssh -AX cseesystems${machine}"
+gnome-terminal -x bash -c "ssh -AX -o StrictHostKeyChecking=no cseesystems${machine}"
