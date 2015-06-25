@@ -70,17 +70,39 @@ class SystemsHUD < Gtk::Window
 	scripts_window.set_default_size 300, 300
 	scripts_window.set_window_position(Gtk::Window::Position::MOUSE)
 	scripts_window.set_keep_above true	
-	infco_button = Gtk::Button.new(:label => "infco")
+	
+        infco_button = Gtk::Button.new(:label => "infco")
 	infco_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
 	infco_button.signal_connect "clicked" do
 	    infcocheck = File.expand_path("../infco-check", __FILE__)	    
 	    system "gnome-terminal -e #{infcocheck}"	    
 	    scripts_window.destroy	    
-	end
+      end
+      
+        provision_button = Gtk::Button.new(:label => "Provision Sysstaff")
+	provision_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	provision_button.signal_connect "clicked" do
+	    provision = File.expand_path("../provision-sysstaff", __FILE__)	    
+	    system "gnome-terminal -e #{provision}"	    
+	    scripts_window.destroy	    
 	
+      end
+	
+        nagios_button = Gtk::Button.new(:label => "Manual Server Nagios Check")
+	nagios_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	nagios_button.signal_connect "clicked" do
+	    nagios = File.expand_path("../nagios-check", __FILE__)	    
+	    system "gnome-terminal -e #{nagios}"	    
+	    scripts_window.destroy	    
+	
+      end
+
+
 	buttons_box = Gtk::Box.new :vertical, 5
 	buttons_box.add(infco_button)
-	scripts_window.add(buttons_box)
+	buttons_box.add(provision_button)
+        buttons_box.add(nagios_button)
+        scripts_window.add(buttons_box)
 	scripts_window.show_all
     end
 
@@ -261,7 +283,7 @@ class SystemsHUD < Gtk::Window
 	aer137_button = Gtk::Button.new(:label => "AER 137")
 	aer137_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
 	aer137_button.signal_connect "clicked" do
-            ssh137 = File.expand_path("../137ssh",__FILE__)
+            ssh137 = File.expand_path("../137-ssh",__FILE__)
 	    system("gnome-terminal -e #{ssh137} &")
 	    ssh_window.destroy
         end
@@ -307,17 +329,76 @@ class SystemsHUD < Gtk::Window
 	nodes_window.set_window_position(Gtk::Window::Position::MOUSE)
 	nodes_window.set_keep_above true
 	
-	node007_button = Gtk::Button.new(:label => "node007")
+	node007_button = Gtk::Button.new(:label => "Node007")
 	node007_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
 	node007_button.signal_connect "clicked" do
 		    sshlink("node007")
 	            nodes_window.destroy
         end
         
+        node006_button = Gtk::Button.new(:label => "Node006")
+	node006_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	node006_button.signal_connect "clicked" do
+		    sshlink("node006")
+	            nodes_window.destroy
+        end
         
+        node005_button = Gtk::Button.new(:label => "Node005")
+	node005_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	node005_button.signal_connect "clicked" do
+		    sshlink("node005")
+	            nodes_window.destroy
+        end
+    
+        node004_button = Gtk::Button.new(:label => "Node004")
+	node004_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	node004_button.signal_connect "clicked" do
+		    sshlink("node004")
+	            nodes_window.destroy
+        end
+    
+        node003_button = Gtk::Button.new(:label => "Node003")
+	node003_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	node003_button.signal_connect "clicked" do
+		    sshlink("node003")
+	            nodes_window.destroy
+        end
+    
+        node002_button = Gtk::Button.new(:label => "Node002")
+	node002_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	node002_button.signal_connect "clicked" do
+		    sshlink("node002")
+	            nodes_window.destroy
+        end
+    
+        node001_button = Gtk::Button.new(:label => "Node001")
+	node001_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	node001_button.signal_connect "clicked" do
+		    sshlink("node001")
+	            nodes_window.destroy
+        end
+    
+    
 	buttons_box = Gtk::Box.new :vertical, 5
-	buttons_box.add(node007_button)
+        buttons_sub_1 = Gtk::Box.new :horizontal, 5
+	buttons_sub_2 = Gtk::Box.new :horizontal, 5
+	buttons_sub_3 = Gtk::Box.new :horizontal, 5
         
+
+        buttons_sub_1.add(node001_button)
+	buttons_sub_1.add(node002_button)
+        buttons_sub_1.add(node003_button)
+        buttons_sub_1.add(node004_button)
+        buttons_sub_2.add(node005_button)
+        buttons_sub_2.add(node006_button)
+        buttons_sub_2.add(node007_button)
+        
+
+        buttons_box.add(buttons_sub_1)
+	buttons_box.add(buttons_sub_2)
+	buttons_box.add(buttons_sub_3)
+	
+
 	nodes_window.add(buttons_box)
 	nodes_window.show_all
 
