@@ -116,12 +116,24 @@ class SystemsHUD < Gtk::Window
 	
       end
 
+        slay_button = Gtk::Button.new(:label => "Slay a user from a machine")
+	slay_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	slay_button.signal_connect "clicked" do
+	    slay = File.expand_path("../slay-user", __FILE__)	    
+	    system "gnome-terminal -e #{slay}"	    
+	    scripts_window.destroy	    
+	
+      end
+
+
+
 	buttons_box = Gtk::Box.new :vertical, 5
 	buttons_box.add(infco_button)
 	buttons_box.add(provision_button)
         buttons_box.add(nagios_button)
         buttons_box.add(media_button)
         buttons_box.add(x11_button)
+        buttons_box.add(slay_button)
         scripts_window.add(buttons_box)
 	scripts_window.show_all
     end

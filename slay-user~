@@ -1,0 +1,17 @@
+#! /usr/bin/env bash
+bro=$(zenity --entry --title "Enter the br0s user to slay" --text "Username")
+machine=$(zenity --entry --title "Enter the machine to slay br0 on" --text "Machine")
+
+
+if [ "$bro" == "" ]; then
+    echo "A username was not entered"
+    exit
+fi
+
+if [ "$machine" == "" ]; then
+    echo "A machine name was not entered, try again"
+    exit
+fi
+
+ssh -A -o stricthostkeychecking=no ${USER}@${machine} "sudo slay ${bro}"
+
