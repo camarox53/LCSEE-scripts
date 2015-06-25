@@ -1,0 +1,19 @@
+#! /usr/bin/env bash
+
+zenity --question --title "Do you want to build 15.04 Netboot media" --text "Do you wish to download the repos and build 15.04 netboot media?"
+
+OUTPUT="$?"
+
+if [ ${OUTPUT} == 0 ]; then
+   echo "Building media"
+   rm -rf ~/build-media
+   cd ~/
+   git clone https://github.com/camarox53/build-media
+   cd ~/build-media
+   ./build-media
+else
+     echo "Not Building Media"
+     exit
+
+fi 
+

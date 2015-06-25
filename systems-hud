@@ -98,10 +98,30 @@ class SystemsHUD < Gtk::Window
       end
 
 
+        x11_button = Gtk::Button.new(:label => "Window Throw to Machine")
+	x11_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	x11_button.signal_connect "clicked" do
+	    x11 = File.expand_path("../window-throw", __FILE__)	    
+	    system "gnome-terminal -e #{x11}"	    
+	    scripts_window.destroy	    
+	
+      end
+
+        media_button = Gtk::Button.new(:label => "Build 15.04 Net Install Media")
+	media_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	media_button.signal_connect "clicked" do
+	    media = File.expand_path("../media-create", __FILE__)	    
+	    system "gnome-terminal -e #{media}"	    
+	    scripts_window.destroy	    
+	
+      end
+
 	buttons_box = Gtk::Box.new :vertical, 5
 	buttons_box.add(infco_button)
 	buttons_box.add(provision_button)
         buttons_box.add(nagios_button)
+        buttons_box.add(media_button)
+        buttons_box.add(x11_button)
         scripts_window.add(buttons_box)
 	scripts_window.show_all
     end

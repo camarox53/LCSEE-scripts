@@ -1,0 +1,15 @@
+#!/bin/bash
+
+machine=$(zenity --entry --title "Enter machine to throw window to" --text "Machine")
+User=$(ssh -A cumorris@${machine} 'echo "`w | grep " :0 " | head -n 1 | cut -d " " -f1`"' )
+Prog=$(zenity --entry --title "Enter Program to send" --text "Program to Send")
+echo "SSH'ing to machine"
+ssh -AX cumorris@${machine} "touch /tmp/.Xauthority && sudo dd if=/home/$User/.Xauthority of=/tmp/.Xauthority"
+echo ".Xauthority file put in place"
+echo "Sending Program of your choice"
+ssh -AX cumorris@${machine} "export DISPLAY=:0 && export XAUTHORITY=/tmp/.Xauthority && $Prog"
+echo "Done"
+echo $machine
+echo $Prog
+
+read
