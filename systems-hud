@@ -37,6 +37,7 @@ class SystemsHUD < Gtk::Window
 
 	scripts_button = Gtk::Button.new()
 	scripts_button.add(scripts_icon)
+	scripts_button.set_tooltip_text "Some Useful Scripts"
 	scripts_button.set_size_request ICON_BUTTON, ICON_BUTTON
 	scripts_button.signal_connect "clicked" do
 	    scripts
@@ -44,6 +45,7 @@ class SystemsHUD < Gtk::Window
 
 	sites_button = Gtk::Button.new()
 	sites_button.add(sites_icon)
+	sites_button.set_tooltip_text "Common Websites"
 	sites_button.set_size_request ICON_BUTTON, ICON_BUTTON
 	sites_button.signal_connect "clicked" do
 	    sites
@@ -51,6 +53,7 @@ class SystemsHUD < Gtk::Window
 
 	ssh_button = Gtk::Button.new()
 	ssh_button.add(ssh_icon)
+	ssh_button.set_tooltip_text "ssh links"
 	ssh_button.set_size_request ICON_BUTTON, ICON_BUTTON
 	ssh_button.signal_connect "clicked" do
 	    ssh
