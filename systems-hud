@@ -5,6 +5,8 @@ require 'gtk3'
 ICON_BUTTON = 24
 BUTTON_SIZE = 64
 BUTTON_LENGTH = 128
+USER_NAME = "#{ENV['USER']}"
+
 class SystemsHUD < Gtk::Window
 
     def initialize
@@ -77,7 +79,7 @@ class SystemsHUD < Gtk::Window
 	    infcocheck = File.expand_path("../infco-check", __FILE__)	    
 	    system "gnome-terminal -e #{infcocheck}"	    
 	    scripts_window.destroy	    
-      end
+	end
       
         provision_button = Gtk::Button.new(:label => "Provision Sysstaff")
 	provision_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
@@ -85,47 +87,35 @@ class SystemsHUD < Gtk::Window
 	    provision = File.expand_path("../provision-sysstaff", __FILE__)	    
 	    system "gnome-terminal -e #{provision}"	    
 	    scripts_window.destroy	    
-	
-      end
-	
+	end
         nagios_button = Gtk::Button.new(:label => "Manual Server Nagios Check")
 	nagios_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
 	nagios_button.signal_connect "clicked" do
 	    nagios = File.expand_path("../nagios-check", __FILE__)	    
 	    system "gnome-terminal -e #{nagios}"	    
 	    scripts_window.destroy	    
-	
-      end
-
-
+	end
         x11_button = Gtk::Button.new(:label => "Window Throw to Machine")
 	x11_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
 	x11_button.signal_connect "clicked" do
 	    x11 = File.expand_path("../window-throw", __FILE__)	    
 	    system "gnome-terminal -e #{x11}"	    
 	    scripts_window.destroy	    
-	
-      end
-
+	end
         media_button = Gtk::Button.new(:label => "Build 15.04 Net Install Media")
 	media_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
 	media_button.signal_connect "clicked" do
 	    media = File.expand_path("../media-create", __FILE__)	    
 	    system "gnome-terminal -e #{media}"	    
-	    scripts_window.destroy	    
-	
-      end
-
+	    scripts_window.destroy
+	end
         slay_button = Gtk::Button.new(:label => "Slay a user from a machine")
 	slay_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
 	slay_button.signal_connect "clicked" do
 	    slay = File.expand_path("../slay-user", __FILE__)	    
 	    system "gnome-terminal -e #{slay}"	    
-	    scripts_window.destroy	    
-	
-      end
-
-
+	    scripts_window.destroy
+	end
 
 	buttons_box = Gtk::Box.new :vertical, 5
 	buttons_box.add(infco_button)
@@ -134,7 +124,8 @@ class SystemsHUD < Gtk::Window
         buttons_box.add(media_button)
         buttons_box.add(x11_button)
         buttons_box.add(slay_button)
-        scripts_window.add(buttons_box)
+
+	scripts_window.add(buttons_box)
 	scripts_window.show_all
     end
 
@@ -367,42 +358,36 @@ class SystemsHUD < Gtk::Window
 		    sshlink("node007")
 	            nodes_window.destroy
         end
-        
         node006_button = Gtk::Button.new(:label => "Node006")
 	node006_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
 	node006_button.signal_connect "clicked" do
 		    sshlink("node006")
 	            nodes_window.destroy
         end
-        
         node005_button = Gtk::Button.new(:label => "Node005")
 	node005_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
 	node005_button.signal_connect "clicked" do
 		    sshlink("node005")
 	            nodes_window.destroy
         end
-    
         node004_button = Gtk::Button.new(:label => "Node004")
 	node004_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
 	node004_button.signal_connect "clicked" do
 		    sshlink("node004")
 	            nodes_window.destroy
         end
-    
         node003_button = Gtk::Button.new(:label => "Node003")
 	node003_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
 	node003_button.signal_connect "clicked" do
 		    sshlink("node003")
 	            nodes_window.destroy
         end
-    
         node002_button = Gtk::Button.new(:label => "Node002")
 	node002_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
 	node002_button.signal_connect "clicked" do
 		    sshlink("node002")
 	            nodes_window.destroy
         end
-    
         node001_button = Gtk::Button.new(:label => "Node001")
 	node001_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
 	node001_button.signal_connect "clicked" do
@@ -410,12 +395,10 @@ class SystemsHUD < Gtk::Window
 	            nodes_window.destroy
         end
     
-    
 	buttons_box = Gtk::Box.new :vertical, 5
         buttons_sub_1 = Gtk::Box.new :horizontal, 5
 	buttons_sub_2 = Gtk::Box.new :horizontal, 5
 	buttons_sub_3 = Gtk::Box.new :horizontal, 5
-        
 
         buttons_sub_1.add(node001_button)
 	buttons_sub_1.add(node002_button)
@@ -425,12 +408,10 @@ class SystemsHUD < Gtk::Window
         buttons_sub_2.add(node006_button)
         buttons_sub_2.add(node007_button)
         
-
         buttons_box.add(buttons_sub_1)
 	buttons_box.add(buttons_sub_2)
 	buttons_box.add(buttons_sub_3)
 	
-
 	nodes_window.add(buttons_box)
 	nodes_window.show_all
 
