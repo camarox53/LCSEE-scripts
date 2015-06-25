@@ -299,9 +299,28 @@ class SystemsHUD < Gtk::Window
     end
 
     def nodes()
-	nodes_window = Gtk::Window.new
-
+        nodes_window = Gtk::Window.new
+    	nodes_window.set_border_width 10
+	nodes_window.override_background_color :normal, Gdk::RGBA::new(0,0,0,1)
+	nodes_window.title = "Nodes"
+	nodes_window.set_default_size 300, 300
+	nodes_window.set_window_position(Gtk::Window::Position::MOUSE)
+	nodes_window.set_keep_above true
+	
+	node007_button = Gtk::Button.new(:label => "node007")
+	node007_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	node007_button.signal_connect "clicked" do
+		    sshlink("node007")
+	            nodes_window.destroy
+        end
+        
+        
+	buttons_box = Gtk::Box.new :vertical, 5
+	buttons_box.add(node007_button)
+        
+	nodes_window.add(buttons_box)
 	nodes_window.show_all
+
     end
 
     def webpage(url)
