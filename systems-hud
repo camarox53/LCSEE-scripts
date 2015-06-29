@@ -30,11 +30,13 @@ class SystemsHUD < Gtk::Window
 	scripts_icon_image = Gdk::Pixbuf.new :file => File.expand_path("../icons/script_code_red.png", __FILE__)
 	sites_icon_image = Gdk::Pixbuf.new :file => File.expand_path("../icons/page_white_world.png", __FILE__)
 	ssh_icon_image = Gdk::Pixbuf.new :file => File.expand_path("../icons/application_osx_terminal.png", __FILE__)	
+	apps_icon_image = Gdk::Pixbuf.new :file => File.expand_path("../icons/font.png", __FILE__)
 
 	scripts_icon = Gtk::Image.new :pixbuf => scripts_icon_image
 	sites_icon = Gtk::Image.new :pixbuf => sites_icon_image
 	ssh_icon = Gtk::Image.new :pixbuf => ssh_icon_image
-
+	apps_icon = Gtk::Image.new :pixbuf => apps_icon_image
+	
 	scripts_button = Gtk::Button.new()
 	scripts_button.add(scripts_icon)
 	scripts_button.set_tooltip_text "Some Useful Scripts"
@@ -58,11 +60,20 @@ class SystemsHUD < Gtk::Window
 	ssh_button.signal_connect "clicked" do
 	    ssh
 	end
-	    
+
+	apps_button = Gtk::Button.new()
+	apps_button.add(apps_icon)	
+	apps_button.set_tooltip_text "launch applications"
+	apps_button.set_size_request ICON_BUTTON, ICON_BUTTON
+	apps_button.signal_connect "clicked" do
+	    apps
+	end	    
+ 
 	buttons_box = Gtk::Box.new :horizontal, 5
 	buttons_box.add(scripts_button)
 	buttons_box.add(sites_button)
 	buttons_box.add(ssh_button)
+	buttons_box.add(apps_button)
 	home_window.add(buttons_box)	
 	home_window.show_all
     end
@@ -344,6 +355,45 @@ class SystemsHUD < Gtk::Window
 	ssh_window.add(buttons_box)
 	ssh_window.show_all
 		
+    end
+
+    def apps()
+	apps_window = Gtk::Window.new
+	apps_window.set_border_width 10
+	apps_window.override_background_color :normal, Gdk::RGBA::new(0,0,0,1)
+	apps_window.title = "Applications"
+	apps_window.set_default_size 300, 300
+	apps_window.set_window_position(Gtk::Window::Position::MOUSE)
+	apps_window.set_keep_above true
+
+	xchat_button = Gtk::Button.new(:label => "XChat")
+	xchat_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	xchat_button.signal_connect "clicked" do
+	   system("xchat &")
+	   apps_window.destroy
+	end
+	gimp_button = Gtk::Button.new(:label => "Gimp")
+	gimp_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	gimp_button.signal_connect "clicked" do
+	    system("gimp &")
+	    apps_window.destroy
+	end	    
+	screenshot_button = Gtk::Button.new(:label => "PrntScrn")
+	screenshot_button.set_size_request BUTTON_SIZE, BUTTON_SIZE
+	screenshot_button.signal_connect "clicked" do
+	    system("gnome-screenshot -d 5 &")
+	    apps_window.destroy
+	end		
+	buttons_box = Gtk::Box.new :vertical, 5
+	buttons_sub_1 = Gtk::Box.new :horizontal, 5
+	
+	buttons_sub_1.add(xchat_button)
+	buttons_sub_1.add(gimp_button)
+	buttons_sub_1.add(screenshot_button)
+	buttons_box.add(buttons_sub_1)
+
+	apps_window.add(buttons_box)
+	apps_window.show_all
     end
 
     def nodes()
